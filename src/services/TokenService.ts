@@ -1,5 +1,5 @@
 import {err, ok, Result} from "neverthrow";
-import {HttpError, IApiService} from "./ApiService.ts";
+import {ApiError, IApiService} from "./ApiService.ts";
 import {decodeJwt} from "jose";
 
 const ACCESS_TOKEN = 'access-token'
@@ -7,7 +7,7 @@ const REFRESH_TOKEN = 'refresh-token'
 
 export type TokenServiceError = { kind: TokenServiceErrorKind.NotLoggedIn | TokenServiceErrorKind.NoApiService } | {
     kind: TokenServiceErrorKind.CouldNotRefresh,
-    error: HttpError
+    error: ApiError
 }
 
 export enum TokenServiceErrorKind {
