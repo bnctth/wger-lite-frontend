@@ -1,5 +1,5 @@
 import {ITokenService, TokenServiceError} from "./TokenService.ts";
-import {err, ok, Result} from "neverthrow";
+import {EitherAsync, Right} from "purify-ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -22,56 +22,53 @@ export class ApiService implements IApiService {
         this._tokenService = ts
     }
 
-    async login(username: string, password: string): Promise<Result<null, ApiError>> {
-        const response = await this.unauthenticatedRequest<{
+    login(username: string, password: string): EitherAsync<ApiError, null> {
+        return this.unauthenticatedRequest<{
             access: string,
             refresh: string
-        }>('token', 'POST', {username: username, password: password});
-        if (response.isErr()) {
-            return err(response.error)
-        }
-        this._tokenService.login(response.value)
-        return ok(null)
+        }>('token', 'POST', {username: username, password: password})
+            .chain(async resp => {
+                this._tokenService.login(resp)
+                return Right(null)
+            })
     }
 
-    private async request<O>(path: string, method: HttpMethod, authHeader: string | null, body: Record<string, unknown> | undefined): Promise<Result<O, ApiError>> {
-        if (!this.baseUrl) {
-            return err({kind: ApiErrorKind.NoBaseUrl})
-        }
-        let headers = {}
-        if (authHeader) {
-            headers = {authorization: authHeader}
-        }
-        const response = await fetch(`${this.baseUrl}/api/v2/${path}`, {
-            method: method,
-            body: JSON.stringify(body),
-            headers: headers
-        });
-        if (!response.ok) {
-            return err({kind: ApiErrorKind.HttpError, status: response.status, body: await response.text()})
-        }
 
-        return ok(await response.json() as O)
+    private request<O>(path: string, method: HttpMethod, authHeader: string | null, body: Record<string, unknown> | undefined): EitherAsync<ApiError, O> {
+        return EitherAsync(async ({throwE}) => {
+            if (!this.baseUrl) {
+                throwE({kind: ApiErrorKind.NoBaseUrl})
+            }
+            let headers = {}
+            if (authHeader) {
+                headers = {authorization: authHeader}
+            }
+            const response = await fetch(`${this.baseUrl}/api/v2/${path}`, {
+                method: method,
+                body: JSON.stringify(body),
+                headers: headers
+            });
+            if (!response.ok) {
+                throwE({kind: ApiErrorKind.HttpError, status: response.status, body: await response.text()})
+            }
+            return await response.json() as O
+        })
     }
 
-    private unauthenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): Promise<Result<O, ApiError>> {
+    private unauthenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): EitherAsync<ApiError, O> {
         return this.request<O>(path, method, null, body)
     }
 
-    private async authenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): Promise<Result<O, ApiError | TokenServiceError>> {
-        const token = await this._tokenService.getAccessToken()
-        if (token.isErr()) {
-            return err(token.error)
-        }
-        return this.request(path, method, `Bearer ${token.value}`, body)
+    private authenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): EitherAsync<ApiError | TokenServiceError, O> {
+        return this._tokenService.getAccessToken()
+            .chain(token => this.request(path, method, `Bearer ${token}`, body))
     }
 
-    async checkServer() {
-        const resp = await this.unauthenticatedRequest<string>('version', 'GET', undefined)
-        return resp.map(_ => null)
+    checkServer(): EitherAsync<ApiError, null> {
+        return this.unauthenticatedRequest<string>('version', 'GET', undefined).map(() => null)
     }
 
-    async refreshToken(rt: string): Promise<Result<{ access: string }, ApiError>> {
+    refreshToken(rt: string): EitherAsync<ApiError, { access: string }> {
         return this.unauthenticatedRequest('refresh', 'POST', {refresh: rt})
     }
 
@@ -82,11 +79,11 @@ export interface IApiService {
 
     set baseUrl(b: string | undefined)
 
-    refreshToken(rt: string): Promise<Result<{ access: string }, ApiError>>
+    refreshToken(rt: string): EitherAsync<ApiError, { access: string }>
 
-    checkServer(): Promise<Result<null, ApiError>>
+    checkServer(): EitherAsync<ApiError, null>
 
-    login(username: string, password: string): Promise<Result<null, ApiError>>
+    login(username: string, password: string): EitherAsync<ApiError, null>
 
 }
 

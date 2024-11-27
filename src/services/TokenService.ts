@@ -1,6 +1,6 @@
-import {err, ok, Result} from "neverthrow";
 import {ApiError, IApiService} from "./ApiService.ts";
 import {decodeJwt} from "jose";
+import {EitherAsync} from "purify-ts";
 
 const ACCESS_TOKEN = 'access-token'
 const REFRESH_TOKEN = 'refresh-token'
@@ -39,31 +39,37 @@ export class TokenService implements ITokenService {
         return !!this._accessToken
     }
 
-    async getAccessToken(): Promise<Result<string, TokenServiceError>> {
-        if (!this._apiService) {
-            return err({kind: TokenServiceErrorKind.NoApiService})
-        }
-        if (!this._accessToken || !this._refreshToken) {
-            return err({kind: TokenServiceErrorKind.NotLoggedIn})
-        }
+    getAccessToken(): EitherAsync<TokenServiceError, string> {
+        return EitherAsync(async ({throwE}) => {
+                if (!this._apiService) {
+                    throwE({kind: TokenServiceErrorKind.NoApiService})
+                    return '' // necessary due to ts bug
+                }
+                if (!this._accessToken || !this._refreshToken) {
+                    throwE({kind: TokenServiceErrorKind.NotLoggedIn})
+                    return ''
+                }
 
-        const payload = decodeJwt(this._accessToken)
-        if ((payload.exp ?? -1) < Date.now() / 1000) {
-            const resp = await this._apiService.refreshToken(this._refreshToken)
-            if (resp.isErr()) {
-                this._accessToken = this._refreshToken = null
-                return err({kind: TokenServiceErrorKind.CouldNotRefresh, error: resp.error})
+                const payload = decodeJwt(this._accessToken)
+                if ((payload.exp ?? -1) < Date.now() / 1000) {
+                    const resp = await this._apiService.refreshToken(this._refreshToken).run()
+                    resp
+                        .ifLeft(err => {
+                            this._accessToken = this._refreshToken = null
+                            throwE({kind: TokenServiceErrorKind.CouldNotRefresh, error: err})
+                        })
+                        .ifRight(({access}) => this._accessToken = access)
+                }
+                return this._accessToken
             }
-            this._accessToken = resp.value.access
-        }
-        return ok(this._accessToken)
+        )
     }
 }
 
 export interface ITokenService {
     set apiService(as: IApiService)
 
-    getAccessToken(): Promise<Result<string, TokenServiceError>>
+    getAccessToken(): EitherAsync<TokenServiceError, string>
 
     isLoggedIn(): boolean
 
