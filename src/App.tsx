@@ -1,9 +1,6 @@
-function App() {
-    return (
-        <>
 
-        </>
-    )
+function App() {
+    return undefined
 }
 
 export default App

@@ -84,6 +84,5 @@ export interface IApiService {
     checkServer(): EitherAsync<ApiError, null>
 
     login(username: string, password: string): EitherAsync<ApiError, null>
-
 }
 
