@@ -1,5 +1,6 @@
 import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
+import {ITokenProvider} from "./TokenProvider.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -14,7 +15,7 @@ export type ApiError = { kind: ApiErrorKind.NoBaseUrl } | {
     body: string
 }
 
-export class ApiService implements IApiService {
+export class ApiService implements IApiService, ITokenProvider {
     baseUrl: string | undefined
     private readonly _tokenService: ITokenService
 
@@ -79,10 +80,6 @@ export interface IApiService {
 
     set baseUrl(b: string | undefined)
 
-    refreshToken(rt: string): EitherAsync<ApiError, { access: string }>
-
     checkServer(): EitherAsync<ApiError, null>
-
-    login(username: string, password: string): EitherAsync<ApiError, null>
 }
 

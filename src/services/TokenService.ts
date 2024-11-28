@@ -1,11 +1,12 @@
-import {ApiError, IApiService} from "./ApiService.ts";
+import {ApiError} from "./ApiService.ts";
 import {decodeJwt} from "jose";
 import {EitherAsync} from "purify-ts";
+import {ITokenProvider} from "./TokenProvider.ts";
 
 const ACCESS_TOKEN = 'access-token'
 const REFRESH_TOKEN = 'refresh-token'
 
-export type TokenServiceError = { kind: TokenServiceErrorKind.NotLoggedIn | TokenServiceErrorKind.NoApiService } | {
+export type TokenServiceError = { kind: TokenServiceErrorKind.NotLoggedIn | TokenServiceErrorKind.NoTokenProvider } | {
     kind: TokenServiceErrorKind.CouldNotRefresh,
     error: ApiError
 }
@@ -13,13 +14,13 @@ export type TokenServiceError = { kind: TokenServiceErrorKind.NotLoggedIn | Toke
 export enum TokenServiceErrorKind {
     NotLoggedIn,
     CouldNotRefresh,
-    NoApiService
+    NoTokenProvider
 }
 
 export class TokenService implements ITokenService {
     private _accessToken: string | null
     private _refreshToken: string | null
-    private _apiService: IApiService | undefined
+    private _tokenProvider: ITokenProvider | undefined
 
     constructor() {
         this._accessToken = localStorage.getItem(ACCESS_TOKEN)
@@ -31,8 +32,8 @@ export class TokenService implements ITokenService {
         this._refreshToken = refresh
     }
 
-    set apiService(value: IApiService) {
-        this._apiService = value;
+    set tokenProvider(value: ITokenProvider) {
+        this._tokenProvider = value;
     }
 
     isLoggedIn(): boolean {
@@ -41,8 +42,8 @@ export class TokenService implements ITokenService {
 
     getAccessToken(): EitherAsync<TokenServiceError, string> {
         return EitherAsync(async ({throwE}) => {
-                if (!this._apiService) {
-                    throwE({kind: TokenServiceErrorKind.NoApiService})
+            if (!this._tokenProvider) {
+                throwE({kind: TokenServiceErrorKind.NoTokenProvider})
                     return '' // necessary due to ts bug
                 }
                 if (!this._accessToken || !this._refreshToken) {
@@ -52,7 +53,7 @@ export class TokenService implements ITokenService {
 
                 const payload = decodeJwt(this._accessToken)
                 if ((payload.exp ?? -1) < Date.now() / 1000) {
-                    const resp = await this._apiService.refreshToken(this._refreshToken).run()
+                    const resp = await this._tokenProvider.refreshToken(this._refreshToken).run()
                     resp
                         .ifLeft(err => {
                             this._accessToken = this._refreshToken = null
@@ -67,8 +68,6 @@ export class TokenService implements ITokenService {
 }
 
 export interface ITokenService {
-    set apiService(as: IApiService)
-
     getAccessToken(): EitherAsync<TokenServiceError, string>
 
     isLoggedIn(): boolean
