@@ -29,7 +29,7 @@ export class ApiService implements IApiService, ITokenProvider {
             refresh: string
         }>('token', 'POST', {username: username, password: password})
             .chain(async resp => {
-                this._tokenService.login(resp)
+                this._tokenService.handleLogin(resp)
                 return Right(null)
             })
     }

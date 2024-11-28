@@ -27,7 +27,16 @@ export class TokenService implements ITokenService {
         this._refreshToken = localStorage.getItem(REFRESH_TOKEN)
     }
 
-    login({access, refresh}: { access: string; refresh: string; }): void {
+    logout(): void {
+        this._accessToken = null;
+        this._refreshToken = null;
+    }
+
+    login(username: string, password: string): EitherAsync<ApiError, null> {
+        return this.tokenProvider.login(username, password);
+    }
+
+    handleLogin({access, refresh}: { access: string; refresh: string; }): void {
         this._accessToken = access
         this._refreshToken = refresh
     }
@@ -72,5 +81,9 @@ export interface ITokenService {
 
     isLoggedIn(): boolean
 
-    login(resp: { access: string, refresh: string }): void
+    login(username: string, password: string): EitherAsync<ApiError, null>
+
+    logout(): void
+
+    handleLogin(resp: { access: string, refresh: string }): void
 }
