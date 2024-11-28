@@ -1,4 +1,4 @@
-import {ITokenService, TokenServiceError} from "./TokenService.ts";
+import {ITokenService} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
 
@@ -60,10 +60,10 @@ export class ApiService implements IApiService, ITokenProvider {
         return this.request<O>(path, method, null, body)
     }
 
-    private authenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): EitherAsync<ApiError | TokenServiceError, O> {
+    /*private authenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): EitherAsync<ApiError | TokenServiceError, O> {
         return this._tokenService.getAccessToken()
             .chain(token => this.request(path, method, `Bearer ${token}`, body))
-    }
+    }*/
 
     checkServer(): EitherAsync<ApiError, null> {
         return this.unauthenticatedRequest<string>('version', 'GET', undefined).map(() => null)

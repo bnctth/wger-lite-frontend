@@ -19,7 +19,33 @@ export enum TokenServiceErrorKind {
 
 export class TokenService implements ITokenService {
     private _accessToken: string | null
+    private get accessToken(): string | null {
+        return this._accessToken;
+    }
+
+    private set accessToken(access: string | null) {
+        this._accessToken = access;
+        if (access) {
+            localStorage.setItem(ACCESS_TOKEN, access);
+        } else {
+            localStorage.removeItem(ACCESS_TOKEN)
+        }
+    }
+
     private _refreshToken: string | null
+    private get refreshToken(): string | null {
+        return this._refreshToken;
+    }
+
+    private set refreshToken(refresh: string | null) {
+        this._refreshToken = refresh;
+        if (refresh) {
+            localStorage.setItem(REFRESH_TOKEN, refresh);
+        } else {
+            localStorage.removeItem(REFRESH_TOKEN)
+        }
+    }
+
     private _tokenProvider: ITokenProvider | undefined
 
     constructor() {
@@ -28,8 +54,8 @@ export class TokenService implements ITokenService {
     }
 
     logout(): void {
-        this._accessToken = null;
-        this._refreshToken = null;
+        this.accessToken = null;
+        this.refreshToken = null;
     }
 
     login(username: string, password: string): EitherAsync<ApiError, null> {
@@ -37,8 +63,8 @@ export class TokenService implements ITokenService {
     }
 
     handleLogin({access, refresh}: { access: string; refresh: string; }): void {
-        this._accessToken = access
-        this._refreshToken = refresh
+        this.accessToken = access
+        this.refreshToken = refresh
     }
 
     set tokenProvider(value: ITokenProvider) {
@@ -46,7 +72,7 @@ export class TokenService implements ITokenService {
     }
 
     isLoggedIn(): boolean {
-        return !!this._accessToken
+        return !!this.accessToken
     }
 
     getAccessToken(): EitherAsync<TokenServiceError, string> {
@@ -55,22 +81,22 @@ export class TokenService implements ITokenService {
                 throwE({kind: TokenServiceErrorKind.NoTokenProvider})
                     return '' // necessary due to ts bug
                 }
-                if (!this._accessToken || !this._refreshToken) {
+            if (!this.accessToken || !this.refreshToken) {
                     throwE({kind: TokenServiceErrorKind.NotLoggedIn})
                     return ''
                 }
 
-                const payload = decodeJwt(this._accessToken)
+            const payload = decodeJwt(this.accessToken)
                 if ((payload.exp ?? -1) < Date.now() / 1000) {
-                    const resp = await this._tokenProvider.refreshToken(this._refreshToken).run()
+                    const resp = await this._tokenProvider.refreshToken(this.refreshToken).run()
                     resp
                         .ifLeft(err => {
-                            this._accessToken = this._refreshToken = null
+                            this.accessToken = this.refreshToken = null
                             throwE({kind: TokenServiceErrorKind.CouldNotRefresh, error: err})
                         })
-                        .ifRight(({access}) => this._accessToken = access)
+                        .ifRight(({access}) => this.accessToken = access)
                 }
-                return this._accessToken
+            return this.accessToken
             }
         )
     }
