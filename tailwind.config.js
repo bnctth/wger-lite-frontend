@@ -11,7 +11,10 @@ export default {
             colors: {
                 primary: colors.teal["500"],
                 'primary-hover': colors.teal["400"],
-                'light': colors.gray["200"]
+                'primary-faded': colors.teal["200"],
+                'light': colors.gray["200"],
+                error: colors.red["500"],
+                'error-faded': colors.red["200"]
             }
         },
     },

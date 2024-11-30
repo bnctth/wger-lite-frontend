@@ -3,6 +3,7 @@ import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+const BASE_URL = 'base-url'
 
 export enum ApiErrorKind {
     HttpError,
@@ -16,11 +17,25 @@ export type ApiError = { kind: ApiErrorKind.NoBaseUrl } | {
 }
 
 export class ApiService implements IApiService, ITokenProvider {
-    baseUrl: string | undefined
-    private readonly _tokenService: ITokenService
-
     constructor(ts: ITokenService) {
         this._tokenService = ts
+        this._baseUrl = localStorage.getItem(BASE_URL) ?? undefined
+    }
+    private readonly _tokenService: ITokenService
+
+    private _baseUrl: string | undefined
+
+    get baseUrl(): string | undefined {
+        return this._baseUrl
+    }
+
+    set baseUrl(b: string | undefined) {
+        this._baseUrl = b
+        if (b) {
+            localStorage.setItem(BASE_URL, b)
+        } else {
+            localStorage.removeItem(BASE_URL)
+        }
     }
 
     login(username: string, password: string): EitherAsync<ApiError, null> {
@@ -40,9 +55,11 @@ export class ApiService implements IApiService, ITokenProvider {
             if (!this.baseUrl) {
                 throwE({kind: ApiErrorKind.NoBaseUrl})
             }
-            let headers = {}
+            let headers: HeadersInit = {
+                'content-type': 'application/json'
+            }
             if (authHeader) {
-                headers = {authorization: authHeader}
+                headers = {authorization: authHeader, ...headers}
             }
             const response = await fetch(`${this.baseUrl}/api/v2/${path}`, {
                 method: method,

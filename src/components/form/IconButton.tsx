@@ -7,7 +7,7 @@ type IconButtonProps = { icon: IconProp } & ButtonProps
 
 const IconButton = ({icon, children, ...buttonProps}: IconButtonProps) =>
     <Button {...buttonProps}>
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex justify-center items-center gap-2">
             <FontAwesomeIcon className="text-light" icon={icon}/>
             {children}
         </div>

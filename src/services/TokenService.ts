@@ -58,8 +58,14 @@ export class TokenService implements ITokenService {
         this.refreshToken = null;
     }
 
-    login(username: string, password: string): EitherAsync<ApiError, null> {
-        return this.tokenProvider.login(username, password);
+    login(username: string, password: string): EitherAsync<ApiError | TokenServiceError, null> {
+        return EitherAsync(async ({throwE, liftEither}) => {
+            if (!this._tokenProvider) {
+                throwE({kind: TokenServiceErrorKind.NoTokenProvider})
+                return null
+            }
+            return liftEither(await this._tokenProvider.login(username, password).run());
+        })
     }
 
     handleLogin({access, refresh}: { access: string; refresh: string; }): void {
@@ -107,7 +113,7 @@ export interface ITokenService {
 
     isLoggedIn(): boolean
 
-    login(username: string, password: string): EitherAsync<ApiError, null>
+    login(username: string, password: string): EitherAsync<ApiError | TokenServiceError, null>
 
     logout(): void
 
