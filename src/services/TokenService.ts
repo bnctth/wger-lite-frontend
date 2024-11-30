@@ -97,7 +97,7 @@ export class TokenService implements ITokenService {
                     const resp = await this._tokenProvider.refreshToken(this.refreshToken).run()
                     resp
                         .ifLeft(err => {
-                            this.accessToken = this.refreshToken = null
+                            this.logout()
                             throwE({kind: TokenServiceErrorKind.CouldNotRefresh, error: err})
                         })
                         .ifRight(({access}) => this.accessToken = access)

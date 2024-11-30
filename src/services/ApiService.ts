@@ -1,19 +1,24 @@
-import {ITokenService} from "./TokenService.ts";
+import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
+import {PaginatedDataListDto, WorkoutDto} from "./Dtos.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 const BASE_URL = 'base-url'
 
 export enum ApiErrorKind {
     HttpError,
-    NoBaseUrl
+    NoBaseUrl,
+    TokenServiceError
 }
 
 export type ApiError = { kind: ApiErrorKind.NoBaseUrl } | {
     kind: ApiErrorKind.HttpError,
     status: number,
     body: string
+} | {
+    kind: ApiErrorKind.TokenServiceError,
+    source: TokenServiceError
 }
 
 export class ApiService implements IApiService, ITokenProvider {
@@ -21,6 +26,11 @@ export class ApiService implements IApiService, ITokenProvider {
         this._tokenService = ts
         this._baseUrl = localStorage.getItem(BASE_URL) ?? undefined
     }
+
+    getWorkouts(offset: number, limit = 20): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>> {
+        return this.authenticatedRequest(`workout?limit=${limit}&offset=${offset}`, 'GET')
+    }
+
     private readonly _tokenService: ITokenService
 
     private _baseUrl: string | undefined
@@ -77,17 +87,18 @@ export class ApiService implements IApiService, ITokenProvider {
         return this.request<O>(path, method, null, body)
     }
 
-    /*private authenticatedRequest<O>(path: string, method: HttpMethod, body: Record<string, unknown> | undefined): EitherAsync<ApiError | TokenServiceError, O> {
-        return this._tokenService.getAccessToken()
-            .chain(token => this.request(path, method, `Bearer ${token}`, body))
-    }*/
+    refreshToken(rt: string): EitherAsync<ApiError, { access: string }> {
+        return this.unauthenticatedRequest('token/refresh', 'POST', {refresh: rt})
+    }
 
     checkServer(): EitherAsync<ApiError, null> {
         return this.unauthenticatedRequest<string>('version', 'GET', undefined).map(() => null)
     }
 
-    refreshToken(rt: string): EitherAsync<ApiError, { access: string }> {
-        return this.unauthenticatedRequest('refresh', 'POST', {refresh: rt})
+    private authenticatedRequest<O>(path: string, method: HttpMethod, body?: Record<string, unknown>): EitherAsync<ApiError, O> {
+        return this._tokenService.getAccessToken()
+            .mapLeft((tse): ApiError => ({kind: ApiErrorKind.TokenServiceError, source: tse}))
+            .chain(token => this.request(path, method, `Bearer ${token}`, body))
     }
 
 }
@@ -98,5 +109,7 @@ export interface IApiService {
     set baseUrl(b: string | undefined)
 
     checkServer(): EitherAsync<ApiError, null>
+
+    getWorkouts(offset: number, limit?: number): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>>
 }
 
