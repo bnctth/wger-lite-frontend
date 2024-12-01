@@ -16,7 +16,8 @@ const ModalLayout = () => {
     }), [enabled]);
     return (
         <>
-            {enabled && <div className="fixed w-dvw h-dvh backdrop-blur z-50 flex justify-center items-center"
+            {enabled &&
+                <div className="fixed w-dvw h-dvh bg-opacity-80 bg-gray-200 z-50 flex justify-center items-center"
                              onClick={() => setEnabled(false)}>
                 <div className="bg-white border shadow p-10 rounded" onClick={(e) => e.stopPropagation()}>
                     {children}
