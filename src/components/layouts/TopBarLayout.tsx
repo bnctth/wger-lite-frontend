@@ -1,13 +1,18 @@
 import {Outlet, useNavigate} from "react-router";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../../utils.ts";
-import {apiService, tokenService} from "../../services/Instances.ts";
 import IconButton from "../form/IconButton.tsx";
 import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import {useContext} from "react";
+import {ApiServiceContext, TokenServiceContext} from "../../services/Instances.ts";
 
 const TopBarLayout = () => {
     const queryClient = useQueryClient()
     const navigate = useNavigate()
+
+    const apiService = useContext(ApiServiceContext)
+    const tokenService = useContext(TokenServiceContext)
+
     const {data} = useQuery({
         queryKey: ['userProfile'],
         queryFn: eitherAsyncToQueryFn(apiService.userInfo())
