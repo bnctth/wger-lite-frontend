@@ -39,7 +39,7 @@ const Paginated = <T, >({
     }
     const calcPageCount = pageCount(data.count)
     return (
-        <div className="w-full h-full px-10 md:px-20 pb-10 md:pb-20 flex flex-col items-center justify-between">
+        <div className="w-full flex-grow px-10 md:px-20 pb-10 md:pb-20 flex flex-col items-center justify-between">
             <div className="w-full flex flex-col gap-6">
                 {data.results.map(d => renderTemplate(d))}
             </div>
