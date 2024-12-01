@@ -5,34 +5,29 @@ import Button from "../../components/form/Button.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router";
+import {useMutation} from "@tanstack/react-query";
+import {eitherAsyncToQueryFn} from "../../utils.ts";
 
 const HostnameSelector = () => {
     const [hostname, setHostname] = useState('https://wger.de')
-    const [buttonDisabled, setButtonDisabled] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const form: MutableRefObject<HTMLFormElement | null> = useRef(null);
     const navigate = useNavigate();
+    const mutation = useMutation({
+        mutationFn: eitherAsyncToQueryFn(apiService.checkServer()),
+        onSuccess: () => navigate('/auth/login'),
+        onError: () => setErrorMessage('Invalid server')
+    })
     return (<form ref={form} className="w-full flex flex-col gap-5" onSubmit={async (event) => {
-
         event.preventDefault()
-        setButtonDisabled(true);
         apiService.baseUrl = hostname
-        await apiService.checkServer().caseOf({
-                Right: () => {
-                    navigate('/auth/login');
-                }, Left: err => {
-                    console.log(err);
-                    setErrorMessage('Invalid server')
-                }
-            }
-        )
-        setButtonDisabled(false);
+        mutation.mutate()
     }}>
-        {errorMessage && <div className="bg-error-faded border-error border-2 rounded p-2">{errorMessage}</div>}
+        {mutation.isError && <div className="bg-error-faded border-error border-2 rounded p-2">{errorMessage}</div>}
         <TextInput value={hostname} onChange={setHostname} placeholder="https://wger.de" label="Hostname"
                    type="url"></TextInput>
-        <Button onClick={() => form.current?.requestSubmit()} disabled={buttonDisabled}>
-            {buttonDisabled
+        <Button onClick={() => form.current?.requestSubmit()} disabled={mutation.isLoading}>
+            {mutation.isLoading
                 && <FontAwesomeIcon icon={faSpinner} className="animate-spin"/>
                 || "Next"}
         </Button>
