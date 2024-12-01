@@ -79,7 +79,12 @@ export class ApiService implements IApiService, ITokenProvider {
             if (!response.ok) {
                 throwE({kind: ApiErrorKind.HttpError, status: response.status, body: await response.text()})
             }
-            return await response.json() as O
+            try {
+                return await response.json() as O
+            } catch (e) {
+                console.error(e)
+                return null as O // should only happen when O is already null
+            }
         })
     }
 

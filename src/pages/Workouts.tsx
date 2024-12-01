@@ -27,20 +27,18 @@ const Workouts = () => {
     const [editorWorkoutDesc, setEditorWorkoutDesc] = useState('')
     const [mode, setMode] = useState<'create' | 'edit' | 'delete'>('create')
     const [selectedId, setSelectedId] = useState<number | undefined>(undefined)
-    let mutationFn;
-    switch (mode) {
-        case "create":
-            mutationFn = apiService.createWorkout(editorWorkoutName, editorWorkoutDesc)
-            break;
-        case "edit":
-            mutationFn = apiService.editWorkout(selectedId ?? -1, editorWorkoutName, editorWorkoutDesc)
-            break;
-        case "delete":
-            mutationFn = apiService.deleteWorkout(selectedId ?? -1)
-            break;
-    }
+
     const mutation = useMutation({
-        mutationFn: eitherAsyncToQueryFn(mutationFn),
+        mutationFn: async () => {
+            switch (mode) {
+                case "create":
+                    return await eitherAsyncToQueryFn(apiService.createWorkout(editorWorkoutName, editorWorkoutDesc))()
+                case "edit":
+                    return await eitherAsyncToQueryFn(apiService.editWorkout(selectedId ?? -1, editorWorkoutName, editorWorkoutDesc))()
+                case "delete":
+                    return await eitherAsyncToQueryFn(apiService.deleteWorkout(selectedId ?? -1))()
+            }
+        },
         onSuccess: async () => {
             setModalEnabled(false)
             await queryClient.invalidateQueries(workoutKey)
@@ -58,8 +56,8 @@ const Workouts = () => {
             )
         } else {
             setChildren(
-                <Form errorMessage="Could not delete workout" submitText="Delete" mutation={mutation}>
-                    foo
+                <Form headingText="Are you sure?" errorMessage="Could not delete workout" submitText="Delete"
+                      mutation={mutation}>
                 </Form>
             )
         }
@@ -70,6 +68,7 @@ const Workouts = () => {
         <div className="w-full flex justify-center md:justify-end px-20">
             <IconButton icon={faPlus} onClick={() => {
                 mutation.reset()
+                setMode('create')
                 setEditorWorkoutName('')
                 setEditorWorkoutDesc('')
                 setModalEnabled(true)
