@@ -12,6 +12,11 @@ export type WorkoutDto = {
     description: string
 }
 
+export type CreateWorkoutDto = {
+    name: string,
+    description: string
+}
+
 export type UserProfileDto = {
     username: string;
     email: string;

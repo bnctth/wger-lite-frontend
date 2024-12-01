@@ -28,39 +28,36 @@ const Paginated = <T, >({
         queryFn: queryFn(page),
         keepPreviousData: true
     })
-    if (status === 'error') {
-        return errorComponent
-    }
-    if (status === 'loading') {
-        return loadingComponent
-    }
-    if (!data?.count) {
-        return emptyComponent
-    }
-    const calcPageCount = pageCount(data.count)
+
+    const calcPageCount = pageCount(data?.count ?? 0)
+
     return (
         <div className="w-full flex-grow px-10 md:px-20 pb-10 md:pb-20 flex flex-col items-center justify-between">
             <div className="w-full flex flex-col gap-6">
-                {data.results.map(d => renderTemplate(d))}
+                {status === 'loading' && loadingComponent}
+                {status === 'error' && errorComponent}
+                {status === 'success' && data?.count === 0 && emptyComponent}
+                {data?.results?.map(d => renderTemplate(d))}
             </div>
-            <div className="flex flex-col md:flex-row justify-between w-9/12 items-center *:flex-grow">
-                <div className="flex w-full justify-center gap-4 *:flex-grow md:*:flex-grow-0">
-                    <IconButton icon={faAnglesLeft} onClick={() => setPage(0)} disabled={page === 0}></IconButton>
-                    <IconButton icon={faAngleLeft} onClick={() => setPage(p => p - 1)}
-                                disabled={page === 0}></IconButton>
-                </div>
-                <div className="flex w-full justify-center gap-4 flex-wrap *:flex-grow md:*:flex-grow-0">
-                    {Array.from(Array(calcPageCount).keys()).map(n => <Button key={n}
-                                                                              onClick={() => setPage(n)}
-                                                                              disabled={n === page}>{n + 1}</Button>)}
-                </div>
-                <div className="flex w-full justify-center gap-4 *:flex-grow md:*:flex-grow-0">
-                    <IconButton icon={faAngleRight} onClick={() => setPage(p => p + 1)}
-                                disabled={page === calcPageCount - 1}></IconButton>
-                    <IconButton icon={faAnglesRight} onClick={() => setPage(calcPageCount - 1)}
-                                disabled={page === calcPageCount - 1}></IconButton>
-                </div>
-            </div>
+            {!!calcPageCount &&
+                <div className="flex flex-col md:flex-row justify-between w-9/12 items-center *:flex-grow">
+                    <div className="flex w-full justify-center gap-4 *:flex-grow md:*:flex-grow-0">
+                        <IconButton icon={faAnglesLeft} onClick={() => setPage(0)} disabled={page === 0}></IconButton>
+                        <IconButton icon={faAngleLeft} onClick={() => setPage(p => p - 1)}
+                                    disabled={page === 0}></IconButton>
+                    </div>
+                    <div className="flex w-full justify-center gap-4 flex-wrap *:flex-grow md:*:flex-grow-0">
+                        {Array.from(Array(calcPageCount).keys()).map(n => <Button key={n}
+                                                                                  onClick={() => setPage(n)}
+                                                                                  disabled={n === page}>{n + 1}</Button>)}
+                    </div>
+                    <div className="flex w-full justify-center gap-4 *:flex-grow md:*:flex-grow-0">
+                        <IconButton icon={faAngleRight} onClick={() => setPage(p => p + 1)}
+                                    disabled={page === calcPageCount - 1}></IconButton>
+                        <IconButton icon={faAnglesRight} onClick={() => setPage(calcPageCount - 1)}
+                                    disabled={page === calcPageCount - 1}></IconButton>
+                    </div>
+                </div>}
         </div>
     );
 };

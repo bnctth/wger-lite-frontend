@@ -1,13 +1,13 @@
 import {MutableRefObject, useContext, useRef, useState} from "react";
 import TextInput from "../../components/form/TextInput.tsx";
 import TextInputWithButton from "../../components/form/TextInputWithButton.tsx";
-import {faEye, faEyeSlash, faRightToBracket, faSpinner} from "@fortawesome/free-solid-svg-icons";
-import IconButton from "../../components/form/IconButton.tsx";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye, faEyeSlash, faRightToBracket} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router";
 import {useMutation} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../../utils.ts";
 import {TokenServiceContext} from "../../services/Instances.ts";
+import LoadingIconButton from "../../components/form/LoadingIconButton.tsx";
+import ErrorBox from "../../components/ErrorBox.tsx";
 
 const Login = () => {
     const [username, setUsername] = useState('')
@@ -31,18 +31,19 @@ const Login = () => {
         event.preventDefault()
         mutation.mutate()
     }}>
-        {mutation.isError && <div className="bg-error-faded border-error border-2 rounded p-2">{errorMessage}</div>}
+        <ErrorBox enabled={mutation.isError}>
+            {errorMessage}
+        </ErrorBox>
         <TextInput value={username} onChange={setUsername} placeholder="john.doe" label="Username"
                    type="text" required={true}></TextInput>
         <TextInputWithButton buttonIcon={passwordVisible ? faEyeSlash : faEye}
                              onClick={() => setPasswordVisible(v => !v)} value={password} onChange={setPassword}
                              placeholder="****" label="Password"
                              type={passwordVisible ? "text" : "password"} required={true}/>
-        <IconButton icon={faRightToBracket} onClick={() => form.current?.requestSubmit()} disabled={mutation.isLoading}>
-            {mutation.isLoading
-                && <FontAwesomeIcon icon={faSpinner} className="animate-spin"/>
-                || "Login"}
-        </IconButton>
+        <LoadingIconButton icon={faRightToBracket} onClick={() => form.current?.requestSubmit()}
+                           loading={mutation.isLoading}>
+            Login
+        </LoadingIconButton>
     </form>)
 }
 

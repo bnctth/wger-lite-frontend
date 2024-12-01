@@ -104,6 +104,11 @@ export class ApiService implements IApiService, ITokenProvider {
     userInfo(): EitherAsync<ApiError, UserProfileDto> {
         return this.authenticatedRequest('userprofile', 'GET');
     }
+
+    createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto> {
+        return this.authenticatedRequest('workout/', 'POST', {name, description});
+    }
+
 }
 
 export interface IApiService {
@@ -114,6 +119,8 @@ export interface IApiService {
     checkServer(): EitherAsync<ApiError, null>
 
     getWorkouts(offset: number, limit?: number): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>>
+
+    createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto>
 
     userInfo(): EitherAsync<ApiError, UserProfileDto>
 }

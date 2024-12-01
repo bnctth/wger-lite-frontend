@@ -1,12 +1,11 @@
 import {MutableRefObject, useContext, useRef, useState} from "react";
 import TextInput from "../../components/form/TextInput.tsx";
-import Button from "../../components/form/Button.tsx";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router";
 import {useMutation} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../../utils.ts";
 import {ApiServiceContext} from "../../services/Instances.ts";
+import LoadingIconButton from "../../components/form/LoadingIconButton.tsx";
+import ErrorBox from "../../components/ErrorBox.tsx";
 
 const HostnameSelector = () => {
     const [hostname, setHostname] = useState('https://wger.de')
@@ -28,14 +27,13 @@ const HostnameSelector = () => {
         apiService.baseUrl = hostname
         mutation.mutate()
     }}>
-        {mutation.isError && <div className="bg-error-faded border-error border-2 rounded p-2">{errorMessage}</div>}
-        <TextInput value={hostname} onChange={setHostname} placeholder="https://wger.de" label="Hostname"
-                   type="url"></TextInput>
-        <Button onClick={() => form.current?.requestSubmit()} disabled={mutation.isLoading}>
-            {mutation.isLoading
-                && <FontAwesomeIcon icon={faSpinner} className="animate-spin"/>
-                || "Next"}
-        </Button>
+        <ErrorBox enabled={mutation.isError}>
+            {errorMessage}
+        </ErrorBox>
+        <TextInput value={hostname} onChange={setHostname} placeholder="https://wger.de" label="Hostname" type="url"/>
+        <LoadingIconButton onClick={() => form.current?.requestSubmit()} loading={mutation.isLoading}>
+            Next
+        </LoadingIconButton>
     </form>)
 }
 
