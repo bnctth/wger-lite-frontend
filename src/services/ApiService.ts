@@ -1,7 +1,7 @@
 import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
-import {PaginatedDataListDto, WorkoutDto} from "./Dtos.ts";
+import {PaginatedDataListDto, UserProfileDto, WorkoutDto} from "./Dtos.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 const BASE_URL = 'base-url'
@@ -101,6 +101,9 @@ export class ApiService implements IApiService, ITokenProvider {
             .chain(token => this.request(path, method, `Bearer ${token}`, body))
     }
 
+    userInfo(): EitherAsync<ApiError, UserProfileDto> {
+        return this.authenticatedRequest('userprofile', 'GET');
+    }
 }
 
 export interface IApiService {
@@ -111,5 +114,7 @@ export interface IApiService {
     checkServer(): EitherAsync<ApiError, null>
 
     getWorkouts(offset: number, limit?: number): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>>
+
+    userInfo(): EitherAsync<ApiError, UserProfileDto>
 }
 

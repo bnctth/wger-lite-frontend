@@ -1,6 +1,6 @@
 import {Outlet, useLocation, useNavigate} from "react-router";
 import {useEffect} from "react";
-import {tokenService} from "../services/Instances.ts";
+import {tokenService} from "../../services/Instances.ts";
 
 const AuthGuardLayout = () => {
     const location = useLocation()
