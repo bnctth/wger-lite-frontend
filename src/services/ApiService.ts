@@ -28,7 +28,7 @@ export class ApiService implements IApiService, ITokenProvider {
     }
 
     getWorkouts(offset: number, limit = 20): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>> {
-        return this.authenticatedRequest(`workout?limit=${limit}&offset=${offset}`, 'GET')
+        return this.authenticatedRequest(`workout/?limit=${limit}&offset=${offset}`, 'GET')
     }
 
     private readonly _tokenService: ITokenService
@@ -93,7 +93,7 @@ export class ApiService implements IApiService, ITokenProvider {
     }
 
     refreshToken(rt: string): EitherAsync<ApiError, { access: string }> {
-        return this.unauthenticatedRequest('token/refresh', 'POST', {refresh: rt})
+        return this.unauthenticatedRequest('token/refresh/', 'POST', {refresh: rt})
     }
 
     checkServer(): EitherAsync<ApiError, null> {
@@ -107,7 +107,7 @@ export class ApiService implements IApiService, ITokenProvider {
     }
 
     userInfo(): EitherAsync<ApiError, UserProfileDto> {
-        return this.authenticatedRequest('userprofile', 'GET');
+        return this.authenticatedRequest('userprofile/', 'GET');
     }
 
     createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto> {

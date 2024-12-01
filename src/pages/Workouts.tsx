@@ -11,6 +11,9 @@ import {ModalContext} from "../components/layouts/ModalLayout.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import WorkoutEditor from "../components/workout/WorkoutEditor.tsx";
 import Form from "../components/form/Form.tsx";
+import EmptyComponent from "../components/EmptyComponent.tsx";
+import ErrorComponent from "../components/ErrorComponent.tsx";
+import LoadingComponent from "../components/LoadingComponent.tsx";
 
 const limit = 5
 const workoutKey = ['workout']
@@ -89,9 +92,9 @@ const Workouts = () => {
                 setSelectedId(w.id)
                 setModalEnabled(true)
             }}/>}
-            loadingComponent={"Loading"}
-            errorComponent={"Error"}
-            emptyComponent={"Empty"}
+            loadingComponent={<LoadingComponent/>}
+            errorComponent={<ErrorComponent/>}
+            emptyComponent={<EmptyComponent/>}
             queryKey={workoutKey}
             pageCount={c => Math.ceil(c / limit)}
         />
