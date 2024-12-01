@@ -47,9 +47,24 @@ const Paginated = <T, >({
                                     disabled={page === 0}></IconButton>
                     </div>
                     <div className="flex w-full justify-center gap-4 flex-wrap *:flex-grow md:*:flex-grow-0">
-                        {Array.from(Array(calcPageCount).keys()).map(n => <Button key={n}
-                                                                                  onClick={() => setPage(n)}
-                                                                                  disabled={n === page}>{n + 1}</Button>)}
+                        {Array.from(Array(5).keys())
+                            .map(n => n + page - 2)
+                            .map(n => {
+                                if (n < 0) {
+                                    return n + 5
+                                }
+                                if (n >= calcPageCount) {
+                                    return n - 5
+                                }
+                                return n
+                            })
+                            .filter(n => n >= 0 && n < calcPageCount)
+                            .sort((a, b) => (a - b))
+                            .map(n =>
+                                <Button key={n}
+                                        onClick={() => setPage(n)}
+                                        disabled={n === page}>{n + 1}</Button>
+                            )}
                     </div>
                     <div className="flex w-full justify-center gap-4 *:flex-grow md:*:flex-grow-0">
                         <IconButton icon={faAngleRight} onClick={() => setPage(p => p + 1)}
@@ -59,7 +74,8 @@ const Paginated = <T, >({
                     </div>
                 </div>}
         </div>
-    );
+    )
+        ;
 };
 
 export default Paginated;

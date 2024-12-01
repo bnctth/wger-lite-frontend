@@ -93,7 +93,7 @@ export class ApiService implements IApiService, ITokenProvider {
     }
 
     refreshToken(rt: string): EitherAsync<ApiError, { access: string }> {
-        return this.unauthenticatedRequest('token/refresh/', 'POST', {refresh: rt})
+        return this.unauthenticatedRequest('token/refresh', 'POST', {refresh: rt})
     }
 
     checkServer(): EitherAsync<ApiError, null> {
