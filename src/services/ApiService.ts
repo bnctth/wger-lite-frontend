@@ -109,6 +109,14 @@ export class ApiService implements IApiService, ITokenProvider {
         return this.authenticatedRequest('workout/', 'POST', {name, description});
     }
 
+    deleteWorkout(id: number): EitherAsync<ApiError, null> {
+        return this.authenticatedRequest(`workout/${id}/`, 'DELETE');
+    }
+
+    editWorkout(id: number, name: string, description: string): EitherAsync<ApiError, WorkoutDto> {
+        return this.authenticatedRequest(`workout/${id}/`, 'PUT', {name, description});
+    }
+
 }
 
 export interface IApiService {
@@ -121,6 +129,10 @@ export interface IApiService {
     getWorkouts(offset: number, limit?: number): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>>
 
     createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto>
+
+    editWorkout(id: number, name: string, description: string): EitherAsync<ApiError, WorkoutDto>
+
+    deleteWorkout(id: number): EitherAsync<ApiError, null>
 
     userInfo(): EitherAsync<ApiError, UserProfileDto>
 }

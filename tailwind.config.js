@@ -1,4 +1,12 @@
 import colors from "tailwindcss/colors";
+import {buttonColors} from "./src/utils.ts";
+
+const safelist = buttonColors.flatMap(color => [
+    `bg-${color}`,
+    `disabled:border-${color}`,
+    `disabled:text-${color}`,
+    `hover:bg-${color}-hover`
+])
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,6 +14,7 @@ export default {
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    safelist,
     theme: {
         extend: {
             colors: {
@@ -13,8 +22,9 @@ export default {
                 'primary-hover': colors.teal["400"],
                 'primary-faded': colors.teal["200"],
                 'light': colors.gray["200"],
-                error: colors.red["500"],
-                'error-faded': colors.red["200"]
+                danger: colors.red["500"],
+                'danger-hover': colors.red["400"],
+                'danger-faded': colors.red["200"]
             }
         },
     },

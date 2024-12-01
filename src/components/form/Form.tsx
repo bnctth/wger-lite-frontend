@@ -1,16 +1,16 @@
 import {MutableRefObject, ReactNode, useRef} from "react";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {UseMutationResult} from "@tanstack/react-query";
 import LoadingIconButton from "./LoadingIconButton.tsx";
 import ErrorBox from "../ErrorBox.tsx";
+import {Mutation} from "../../utils.ts";
 
-const Form = <TData, TError, TContext>({children, submitText, submitIcon, mutation, headingText, errorMessage}: {
+const Form = ({children, submitText, submitIcon, mutation, headingText, errorMessage}: {
     headingText?: string,
     errorMessage: string,
     children: ReactNode,
     submitText: string,
     submitIcon?: IconProp,
-    mutation: UseMutationResult<TData, TError, void, TContext>
+    mutation: Mutation
 }) => {
     const form: MutableRefObject<HTMLFormElement | null> = useRef(null);
 
