@@ -10,7 +10,7 @@ export type Mutation = UseMutationResult<unknown, unknown, void>
 // forrasmegjeloles: https://medium.com/@achronus/solving-a-niche-frontend-problem-dynamic-tailwind-css-classes-in-react-da5f513ecf6a
 enum ButtonColors {
     "primary",
-    "danger"
+    "danger",
 }
 
 export const buttonColors = Object.values(ButtonColors);
