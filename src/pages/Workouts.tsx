@@ -1,4 +1,4 @@
-import Paginated from "../components/Paginated.tsx";
+import Paginated from "../components/list-pages/Paginated.tsx";
 import {WorkoutDto} from "../services/Dtos.ts";
 import {eitherAsyncToQueryFn} from "../utils.ts";
 import {useContext, useEffect, useState} from "react";
@@ -11,9 +11,9 @@ import {ModalContext} from "../components/layouts/ModalLayout.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import WorkoutEditor from "../components/workout/WorkoutEditor.tsx";
 import Form from "../components/form/Form.tsx";
-import EmptyComponent from "../components/EmptyComponent.tsx";
-import ErrorComponent from "../components/ErrorComponent.tsx";
-import LoadingComponent from "../components/LoadingComponent.tsx";
+import EmptyComponent from "../components/list-pages/EmptyComponent.tsx";
+import ErrorComponent from "../components/list-pages/ErrorComponent.tsx";
+import LoadingComponent from "../components/list-pages/LoadingComponent.tsx";
 
 const limit = 5
 const workoutKey = ['workout']

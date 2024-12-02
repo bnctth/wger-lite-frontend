@@ -1,7 +1,7 @@
 import {MutableRefObject, ReactNode, useRef} from "react";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import LoadingIconButton from "./LoadingIconButton.tsx";
-import ErrorBox from "../ErrorBox.tsx";
+import ErrorBox from "../list-pages/ErrorBox.tsx";
 import {Mutation} from "../../utils.ts";
 
 const Form = ({children, submitText, submitIcon, mutation, headingText, errorMessage}: {

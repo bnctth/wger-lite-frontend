@@ -1,8 +1,8 @@
-import {PaginatedDataListDto} from "../services/Dtos.ts";
+import {PaginatedDataListDto} from "../../services/Dtos.ts";
 import {ReactNode, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import Button from "./form/Button.tsx";
-import IconButton from "./form/IconButton.tsx";
+import Button from "../form/Button.tsx";
+import IconButton from "../form/IconButton.tsx";
 import {faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight} from "@fortawesome/free-solid-svg-icons";
 
 const Paginated = <T, >({

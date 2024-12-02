@@ -27,10 +27,6 @@ export class ApiService implements IApiService, ITokenProvider {
         this._baseUrl = localStorage.getItem(BASE_URL) ?? undefined
     }
 
-    getWorkouts(offset: number, limit = 20): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>> {
-        return this.authenticatedRequest(`workout/?limit=${limit}&offset=${offset}`, 'GET')
-    }
-
     private readonly _tokenService: ITokenService
 
     private _baseUrl: string | undefined
@@ -104,6 +100,10 @@ export class ApiService implements IApiService, ITokenProvider {
         return this._tokenService.getAccessToken()
             .mapLeft((tse): ApiError => ({kind: ApiErrorKind.TokenServiceError, source: tse}))
             .chain(token => this.request(path, method, `Bearer ${token}`, body))
+    }
+
+    getWorkouts(offset: number, limit = 20): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>> {
+        return this.authenticatedRequest(`workout/?limit=${limit}&offset=${offset}&ordering=id`, 'GET')
     }
 
     userInfo(): EitherAsync<ApiError, UserProfileDto> {
