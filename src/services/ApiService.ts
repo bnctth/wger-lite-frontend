@@ -1,7 +1,7 @@
 import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
-import {PaginatedDataListDto, UserProfileDto, WorkoutDto} from "./Dtos.ts";
+import {CreateWorkoutDto, PaginatedDataListDto, UserProfileDto, WorkoutDto} from "./Dtos.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 const BASE_URL = 'base-url'
@@ -115,7 +115,7 @@ export class ApiService implements IApiService, ITokenProvider {
     }
 
 
-    createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto> {
+    createWorkout({name, description}: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto> {
         return this.authenticatedRequest('workout/', 'POST', {name, description});
     }
 
@@ -123,7 +123,7 @@ export class ApiService implements IApiService, ITokenProvider {
         return this.authenticatedRequest(`workout/${id}/`, 'DELETE');
     }
 
-    editWorkout(id: number, name: string, description: string): EitherAsync<ApiError, WorkoutDto> {
+    editWorkout(id: number, {name, description}: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto> {
         return this.authenticatedRequest(`workout/${id}/`, 'PUT', {name, description});
     }
 
@@ -140,9 +140,9 @@ export interface IApiService {
 
     getWorkout(id: number): EitherAsync<ApiError, WorkoutDto>
 
-    createWorkout(name: string, description: string): EitherAsync<ApiError, WorkoutDto>
+    createWorkout(workout: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto>
 
-    editWorkout(id: number, name: string, description: string): EitherAsync<ApiError, WorkoutDto>
+    editWorkout(id: number, workout: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto>
 
     deleteWorkout(id: number): EitherAsync<ApiError, null>
 

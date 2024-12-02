@@ -1,5 +1,5 @@
-import {WorkoutDto} from "../services/Dtos.ts";
-import {useContext, useEffect, useState} from "react";
+import {CreateWorkoutDto, WorkoutDto} from "../services/Dtos.ts";
+import {useContext, useEffect} from "react";
 import {ApiServiceContext} from "../services/Instances.ts";
 import WorkoutCard from "../components/workout/WorkoutCard.tsx";
 import {TitleContext} from "../components/layouts/TopBarLayout.tsx";
@@ -15,39 +15,21 @@ const Workouts = () => {
     useEffect(() => setTitle('Routines'))
 
 
-    const [editorWorkoutName, setEditorWorkoutName] = useState('')
-    const [editorWorkoutDesc, setEditorWorkoutDesc] = useState('')
-    const [selectedId, setSelectedId] = useState<number | undefined>(undefined)
-
-
-    return <MutablePaginated<WorkoutDto>
+    return <MutablePaginated<CreateWorkoutDto, WorkoutDto>
         name="workout"
         getItems={(page) => apiService.getWorkouts(page * limit, limit)}
-        createAction={apiService.createWorkout(editorWorkoutName, editorWorkoutDesc)}
-        onCreate={() => {
-            setEditorWorkoutName('')
-            setEditorWorkoutDesc('')
-        }}
-        editAction={apiService.editWorkout(selectedId ?? -1, editorWorkoutName, editorWorkoutDesc)}
-        deleteAction={apiService.deleteWorkout(selectedId ?? -1)}
+        createAction={apiService.createWorkout}
+        editAction={apiService.editWorkout}
+        deleteAction={apiService.deleteWorkout}
         renderTemplate={(w, onEdit, onDelete) =>
             <WorkoutCard key={w.id} workout={w} onEdit={onEdit} onDelete={onDelete}/>
         }
-        onEdit={(w) => {
-            setSelectedId(w.id)
-            setEditorWorkoutName(w.name)
-            setEditorWorkoutDesc(w.description)
-        }}
-        onDelete={(w) => {
-            setSelectedId(w.id)
-        }}
-        renderEditor={(mutation, mode) =>
-            <WorkoutEditor mutation={mutation} name={editorWorkoutName}
-                           setName={setEditorWorkoutName} desc={editorWorkoutDesc}
-                           setDesc={setEditorWorkoutDesc}
+        renderEditor={(mutation, mode, workout, setWorkout) =>
+            <WorkoutEditor mutation={mutation} workout={workout} setWorkout={setWorkout}
                            headingText={mode === 'create' ? "Create workout" : "Edit workout"}
                            submitIcon={mode === 'create' ? faPlus : faPencil}/>}
         queryKey={['workout']}
+        defaultEditorValue={{name: '', description: ''}}
         pageCount={c => Math.ceil(c / limit)}
     />
 

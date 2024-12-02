@@ -1,4 +1,4 @@
-import {ReactNode, useContext, useEffect, useState} from "react";
+import {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {ModalContext} from "../layouts/ModalLayout.tsx";
 import {eitherAsyncToQueryFn, Mutation} from "../../utils.ts";
@@ -15,32 +15,28 @@ import EmptyComponent from "./EmptyComponent.tsx";
 
 type mode = 'create' | 'edit' | 'delete'
 
-const MutablePaginated = <TDto, >({
-                                      editAction,
-                                      deleteAction,
-                                      createAction,
-                                      name,
-                                      renderEditor,
-                                      queryKey,
-                                      getItems,
-                                      renderTemplate,
-                                      onCreate,
-                                      onEdit,
-                                      onDelete,
-                                      pageCount
-                                  }: {
+const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number }>({
+                                                                                        editAction,
+                                                                                        deleteAction,
+                                                                                        createAction,
+                                                                                        name,
+                                                                                        renderEditor,
+                                                                                        queryKey,
+                                                                                        getItems,
+                                                                                        renderTemplate,
+                                                                                        pageCount,
+                                                                                        defaultEditorValue
+                                                                                    }: {
     name: string,
-    getItems: (page: number) => EitherAsync<ApiError, PaginatedDataListDto<TDto>>
-    createAction: EitherAsync<ApiError, unknown>,
-    editAction: EitherAsync<ApiError, unknown>,
-    deleteAction: EitherAsync<ApiError, unknown>,
-    renderTemplate: (item: TDto, onEdit: () => void, onDelete: () => void) => ReactNode,
-    onCreate: () => void,
-    onEdit: (item: TDto) => void,
-    onDelete: (item: TDto) => void,
-    renderEditor: (mutation: Mutation, mode: mode) => ReactNode,
+    getItems: (page: number) => EitherAsync<ApiError, PaginatedDataListDto<TViewDto>>
+    createAction: (item: TEditorDto) => EitherAsync<ApiError, unknown>,
+    editAction: (id: number, item: TEditorDto) => EitherAsync<ApiError, unknown>,
+    deleteAction: (id: number) => EitherAsync<ApiError, unknown>,
+    renderTemplate: (item: TViewDto, onEdit: () => void, onDelete: () => void) => ReactNode,
+    renderEditor: (mutation: Mutation, mode: mode, editorItem: TEditorDto, setEditorItem: Dispatch<SetStateAction<TEditorDto>>) => ReactNode,
     queryKey: unknown[],
-    pageCount: (count: number) => number
+    pageCount: (count: number) => number,
+    defaultEditorValue: TEditorDto
 }) => {
     const queryClient = useQueryClient()
 
@@ -48,15 +44,18 @@ const MutablePaginated = <TDto, >({
 
     const [mode, setMode] = useState<mode>('create')
 
+    const [selectedId, setSelectedId] = useState<number | undefined>()
+    const [editorItem, setEditorItem] = useState<TEditorDto>(defaultEditorValue)
+
     const mutation = useMutation({
         mutationFn: async () => {
             switch (mode) {
                 case "create":
-                    return await eitherAsyncToQueryFn(createAction)()
+                    return await eitherAsyncToQueryFn(createAction(editorItem))()
                 case "edit":
-                    return await eitherAsyncToQueryFn(editAction)()
+                    return await eitherAsyncToQueryFn(editAction(selectedId ?? -1, editorItem))()
                 case "delete":
-                    return await eitherAsyncToQueryFn(deleteAction)()
+                    return await eitherAsyncToQueryFn(deleteAction(selectedId ?? -1))()
             }
         },
         onSuccess: async () => {
@@ -67,7 +66,7 @@ const MutablePaginated = <TDto, >({
     })
     useEffect(() => {
         if (mode === 'create' || mode == 'edit') {
-            setChildren(renderEditor(mutation, mode) as JSX.Element)
+            setChildren(renderEditor(mutation, mode, editorItem, setEditorItem) as JSX.Element)
         } else {
             setChildren(
                 <Form headingText="Are you sure?" errorMessage={`Could not delete ${name}`} submitText="Delete"
@@ -83,21 +82,22 @@ const MutablePaginated = <TDto, >({
             <IconButton icon={faPlus} onClick={() => {
                 mutation.reset()
                 setMode('create')
-                onCreate()
+                setEditorItem(defaultEditorValue)
                 setModalEnabled(true)
             }}>Add {name}</IconButton>
         </div>
-        <Paginated<TDto>
+        <Paginated<TViewDto>
             queryFn={(page) => eitherAsyncToQueryFn(getItems(page))}
             renderTemplate={(i) => renderTemplate(i, () => {
                 mutation.reset()
                 setMode('edit')
-                onEdit(i)
+                setSelectedId(i.id)
+                setEditorItem(i)
                 setModalEnabled(true)
             }, () => {
                 mutation.reset()
                 setMode('delete')
-                onDelete(i)
+                setSelectedId(i.id)
                 setModalEnabled(true)
             })}
             loadingComponent={<LoadingComponent/>}
