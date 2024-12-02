@@ -2,7 +2,7 @@ import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
 import {PaginatedDataListDto, UserProfileDto} from "./Dtos.ts";
-import {CrudEndpoint} from "./crud-endpoints.ts";
+import {CrudEndpoint} from "./CrudEndpoint.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 const BASE_URL = 'base-url'
@@ -16,7 +16,7 @@ export enum ApiErrorKind {
 type UndefineableString = string | undefined
 
 
-type MaybeNumber<T extends string | undefined> = T extends string ? number : undefined
+export type MaybeNumber<T extends string | undefined> = T extends string ? number : undefined
 
 export type ApiError = { kind: ApiErrorKind.NoBaseUrl } | {
     kind: ApiErrorKind.HttpError,

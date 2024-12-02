@@ -1,46 +1,49 @@
-import {createContext, Dispatch, ReactNode, SetStateAction, useState} from "react";
+import {createContext, Dispatch, ReactNode, SetStateAction, useContext, useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import Modal from "../Modal.tsx";
 import {eitherAsyncToQueryFn, Mutation} from "../../utils.ts";
 import Paginated from "./Paginated.tsx";
-import {EitherAsync} from "purify-ts";
-import {ApiError} from "../../services/ApiService.ts";
+import {MaybeNumber} from "../../services/ApiService.ts";
 import Form from "../form/Form.tsx";
 import IconButton from "../form/IconButton.tsx";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {PaginatedDataListDto} from "../../services/Dtos.ts";
 import LoadingComponent from "./LoadingComponent.tsx";
 import ErrorComponent from "./ErrorComponent.tsx";
 import EmptyComponent from "./EmptyComponent.tsx";
+import {CrudEndpoint} from "../../services/CrudEndpoint.ts";
+import {ApiServiceContext} from "../../services/Instances.ts";
 
 export type ReducedMode = 'create' | 'edit'
 export type Mode = ReducedMode | 'delete'
 
 export const PageNameContext = createContext('')
 
-const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number }>({
-                                                                                        editAction,
-                                                                                        deleteAction,
-                                                                                        createAction,
-                                                                                        name,
-                                                                                        renderEditor,
-                                                                                        queryKey,
-                                                                                        getItems,
-                                                                                        renderTemplate,
-                                                                                        pageCount,
-                                                                                        defaultEditorValue
-                                                                                    }: {
+const MutablePaginated = <TEditorDto extends Record<string, unknown>, TViewDto extends TEditorDto & {
+    id: number
+}, TParent extends string | undefined>({
+                                           endpoint,
+                                           name,
+                                           renderEditor,
+                                           queryKey,
+                                           getItems,
+                                           renderTemplate,
+                                           pageCount,
+                                           defaultEditorValue,
+                                           parentId,
+                                           ordering
+                                       }: {
     name: string,
-    getItems: (page: number) => EitherAsync<ApiError, PaginatedDataListDto<TViewDto>>
-    createAction: (item: TEditorDto) => EitherAsync<ApiError, unknown>,
-    editAction: (id: number, item: TEditorDto) => EitherAsync<ApiError, unknown>,
-    deleteAction: (id: number) => EitherAsync<ApiError, unknown>,
+    getItems: (page: number) => { offset: number, limit: number }
+    endpoint: CrudEndpoint<TEditorDto, TViewDto, TParent>,
+    parentId: MaybeNumber<TParent>,
+    ordering?: string
     renderTemplate: (item: TViewDto, onEdit: () => void, onDelete: () => void) => ReactNode,
     renderEditor: (mutation: Mutation, mode: ReducedMode, editorItem: TEditorDto, setEditorItem: Dispatch<SetStateAction<TEditorDto>>) => ReactNode,
     queryKey: unknown[],
     pageCount: (count: number) => number,
     defaultEditorValue: TEditorDto
 }) => {
+    const apiService = useContext(ApiServiceContext)
     const queryClient = useQueryClient()
 
     const [modalEnabled, setModalEnabled] = useState(false)
@@ -54,11 +57,11 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
         mutationFn: async () => {
             switch (mode) {
                 case "create":
-                    return await eitherAsyncToQueryFn(createAction(editorItem))()
+                    return await eitherAsyncToQueryFn(apiService.create(endpoint, editorItem))()
                 case "edit":
-                    return await eitherAsyncToQueryFn(editAction(selectedId ?? -1, editorItem))()
+                    return await eitherAsyncToQueryFn(apiService.update(endpoint, selectedId ?? -1, editorItem))()
                 case "delete":
-                    return await eitherAsyncToQueryFn(deleteAction(selectedId ?? -1))()
+                    return await eitherAsyncToQueryFn(apiService.delete(endpoint, selectedId ?? -1))()
             }
         },
         onSuccess: async () => {
@@ -90,7 +93,10 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
                 }}>Add {name}</IconButton>
             </div>
             <Paginated<TViewDto>
-                queryFn={(page) => eitherAsyncToQueryFn(getItems(page))}
+                queryFn={(page) => {
+                    const {offset, limit} = getItems(page)
+                    return eitherAsyncToQueryFn(apiService.list(endpoint, offset, limit, parentId, ordering))
+                }}
                 renderTemplate={(i) => renderTemplate(i, () => {
                     mutation.reset()
                     setMode('edit')

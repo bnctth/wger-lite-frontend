@@ -1,9 +1,8 @@
-import {TrainingDayEditDto, TrainingDayViewDto} from "../services/Dtos.ts";
 import {useContext, useEffect} from "react";
 import {ApiServiceContext} from "../services/Instances.ts";
 import {TitleContext} from "../components/layouts/TopBarLayout.tsx";
 import MutablePaginated from "../components/list-pages/MutablePaginated.tsx";
-import {TrainingDayEndpoint, WorkoutEndpoint} from "../services/crud-endpoints.ts";
+import {TrainingDayEndpoint, WorkoutEndpoint} from "../services/CrudEndpoint.ts";
 import {useQuery} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../utils.ts";
 import {useParams} from "react-router";
@@ -23,12 +22,9 @@ const TrainingDays = () => {
     useEffect(() => setTitle(`${workout?.name ?? ''} | Training days`))
 
 
-    return <MutablePaginated<TrainingDayEditDto, TrainingDayViewDto>
+    return <MutablePaginated
         name="training day"
-        getItems={(page) => apiService.list(TrainingDayEndpoint, page * limit, limit, workoutId)}
-        createAction={(dto) => apiService.create(TrainingDayEndpoint, dto)} //lambda necessary because of the context of `this`
-        editAction={(id, dto) => apiService.update(TrainingDayEndpoint, id, dto)}
-        deleteAction={(id) => apiService.delete(TrainingDayEndpoint, id)}
+        getItems={(page) => ({offset: page * limit, limit})}
         renderTemplate={(item, onEdit, onDelete) =>
             <TrainingDayCard key={item.id} item={item} onEdit={onEdit} onDelete={onDelete}/>
         }
@@ -37,6 +33,8 @@ const TrainingDays = () => {
         queryKey={['workout', workoutId]}
         defaultEditorValue={{day: [], training: workoutId, description: ''}}
         pageCount={c => Math.ceil(c / limit)}
+        endpoint={TrainingDayEndpoint}
+        parentId={workoutId}
     />
 
 

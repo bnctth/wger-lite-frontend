@@ -8,6 +8,7 @@ import Workouts from "./pages/Workouts.tsx";
 import Index from "./pages/Index.tsx";
 import TopBarLayout from "./components/layouts/TopBarLayout.tsx";
 import TrainingDays from "./pages/TrainingDays.tsx";
+import Sets from "./pages/Sets.tsx";
 
 const queryClient = new QueryClient()
 
@@ -26,6 +27,9 @@ function App() {
                             <Route index element={<Workouts/>}/>
                             <Route path=":workoutId">
                                 <Route index element={<TrainingDays/>}/>
+                                <Route path=":trainingDayId">
+                                    <Route index element={<Sets/>}/>
+                                </Route>
                             </Route>
                         </Route>
                     </Route>

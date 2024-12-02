@@ -59,3 +59,18 @@ export type TrainingDayEditDto = {
     description: string;
     day: number[];
 }
+
+export type SetViewDto = {
+    id: number;
+    exerciseday: number;
+    sets: number;
+    order: number;
+    comment: string;
+}
+
+export type SetEditDto = {
+    exerciseday: number;
+    sets: number;
+    order: number;
+    comment: string;
+}
