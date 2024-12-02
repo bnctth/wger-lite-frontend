@@ -1,6 +1,6 @@
-import {Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from "react";
+import {Dispatch, ReactNode, SetStateAction, useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {ModalContext} from "../layouts/ModalLayout.tsx";
+import Modal from "../Modal.tsx";
 import {eitherAsyncToQueryFn, Mutation} from "../../utils.ts";
 import Paginated from "./Paginated.tsx";
 import {EitherAsync} from "purify-ts";
@@ -40,7 +40,7 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
 }) => {
     const queryClient = useQueryClient()
 
-    const {setChildren, setEnabled: setModalEnabled} = useContext(ModalContext)
+    const [modalEnabled, setModalEnabled] = useState(true)
 
     const [mode, setMode] = useState<mode>('create')
 
@@ -64,20 +64,19 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
         },
         retry: false
     })
-    useEffect(() => {
-        if (mode === 'create' || mode == 'edit') {
-            setChildren(renderEditor(mutation, mode, editorItem, setEditorItem) as JSX.Element)
-        } else {
-            setChildren(
-                <Form headingText="Are you sure?" errorMessage={`Could not delete ${name}`} submitText="Delete"
-                      mutation={mutation}>
-                </Form>
-            )
-        }
-    }, [mode, setChildren, mutation, renderEditor, name, editorItem]);
 
 
     return <div className="h-full w-full flex flex-col items-center gap-10">
+        <Modal enabled={modalEnabled} setEnabled={setModalEnabled}>
+            {
+                mode === 'create' || mode == 'edit' ?
+                    renderEditor(mutation, mode, editorItem, setEditorItem) as JSX.Element
+                    :
+                    <Form headingText="Are you sure?" errorMessage={`Could not delete ${name}`} submitText="Delete"
+                          mutation={mutation}>
+                    </Form>
+            }
+        </Modal>
         <div className="w-full flex justify-center md:justify-end px-20">
             <IconButton icon={faPlus} onClick={() => {
                 mutation.reset()
