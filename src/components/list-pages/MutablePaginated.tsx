@@ -74,7 +74,7 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
                 </Form>
             )
         }
-    }, [mode, setChildren, mutation, renderEditor, name]);
+    }, [mode, setChildren, mutation, renderEditor, name, editorItem]);
 
 
     return <div className="h-full w-full flex flex-col items-center gap-10">

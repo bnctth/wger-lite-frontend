@@ -18,9 +18,9 @@ const Workouts = () => {
     return <MutablePaginated<CreateWorkoutDto, WorkoutDto>
         name="workout"
         getItems={(page) => apiService.getWorkouts(page * limit, limit)}
-        createAction={apiService.createWorkout}
-        editAction={apiService.editWorkout}
-        deleteAction={apiService.deleteWorkout}
+        createAction={(workout) => apiService.createWorkout(workout)} //lambda necessary because of the context of `this`
+        editAction={(id, workout) => apiService.editWorkout(id, workout)}
+        deleteAction={(id) => apiService.deleteWorkout(id)}
         renderTemplate={(w, onEdit, onDelete) =>
             <WorkoutCard key={w.id} workout={w} onEdit={onEdit} onDelete={onDelete}/>
         }
