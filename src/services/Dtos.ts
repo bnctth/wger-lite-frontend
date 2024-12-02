@@ -46,3 +46,10 @@ export type UserProfileDto = {
     ro_access: boolean;
     num_days_weight_reminder: number;
 }
+
+export type TrainingDayDto = {
+    id: number;
+    training: number;
+    description: string;
+    day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+}

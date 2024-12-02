@@ -1,104 +1,57 @@
-import Paginated from "../components/list-pages/Paginated.tsx";
 import {WorkoutDto} from "../services/Dtos.ts";
-import {eitherAsyncToQueryFn} from "../utils.ts";
 import {useContext, useEffect, useState} from "react";
 import {ApiServiceContext} from "../services/Instances.ts";
 import WorkoutCard from "../components/workout/WorkoutCard.tsx";
 import {TitleContext} from "../components/layouts/TopBarLayout.tsx";
-import IconButton from "../components/form/IconButton.tsx";
 import {faPencil, faPlus} from "@fortawesome/free-solid-svg-icons";
-import {ModalContext} from "../components/layouts/ModalLayout.tsx";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
 import WorkoutEditor from "../components/workout/WorkoutEditor.tsx";
-import Form from "../components/form/Form.tsx";
-import EmptyComponent from "../components/list-pages/EmptyComponent.tsx";
-import ErrorComponent from "../components/list-pages/ErrorComponent.tsx";
-import LoadingComponent from "../components/list-pages/LoadingComponent.tsx";
+import MutablePaginated from "../components/list-pages/MutablePaginated.tsx";
 
 const limit = 5
-const workoutKey = ['workout']
 
 const Workouts = () => {
     const apiService = useContext(ApiServiceContext)
-    const queryClient = useQueryClient()
     const setTitle = useContext(TitleContext)
-    useEffect(() => setTitle('Workouts'))
+    useEffect(() => setTitle('Routines'))
 
-    const {setChildren, setEnabled: setModalEnabled} = useContext(ModalContext)
 
     const [editorWorkoutName, setEditorWorkoutName] = useState('')
     const [editorWorkoutDesc, setEditorWorkoutDesc] = useState('')
-    const [mode, setMode] = useState<'create' | 'edit' | 'delete'>('create')
     const [selectedId, setSelectedId] = useState<number | undefined>(undefined)
 
-    const mutation = useMutation({
-        mutationFn: async () => {
-            switch (mode) {
-                case "create":
-                    return await eitherAsyncToQueryFn(apiService.createWorkout(editorWorkoutName, editorWorkoutDesc))()
-                case "edit":
-                    return await eitherAsyncToQueryFn(apiService.editWorkout(selectedId ?? -1, editorWorkoutName, editorWorkoutDesc))()
-                case "delete":
-                    return await eitherAsyncToQueryFn(apiService.deleteWorkout(selectedId ?? -1))()
-            }
-        },
-        onSuccess: async () => {
-            setModalEnabled(false)
-            await queryClient.invalidateQueries(workoutKey)
-        },
-        retry: false
-    })
-    useEffect(() => {
-        if (mode === 'create' || mode == 'edit') {
-            setChildren(
-                <WorkoutEditor mutation={mutation} name={editorWorkoutName} setName={setEditorWorkoutName}
-                               desc={editorWorkoutDesc}
-                               setDesc={setEditorWorkoutDesc}
-                               headingText={mode === 'create' ? "Create workout" : "Edit workout"}
-                               submitIcon={mode === 'create' ? faPlus : faPencil}/>
-            )
-        } else {
-            setChildren(
-                <Form headingText="Are you sure?" errorMessage="Could not delete workout" submitText="Delete"
-                      mutation={mutation}>
-                </Form>
-            )
+
+    return <MutablePaginated<WorkoutDto>
+        name="workout"
+        getItems={(page) => apiService.getWorkouts(page * limit, limit)}
+        createAction={apiService.createWorkout(editorWorkoutName, editorWorkoutDesc)}
+        onCreate={() => {
+            setEditorWorkoutName('')
+            setEditorWorkoutDesc('')
+        }}
+        editAction={apiService.editWorkout(selectedId ?? -1, editorWorkoutName, editorWorkoutDesc)}
+        deleteAction={apiService.deleteWorkout(selectedId ?? -1)}
+        renderTemplate={(w, onEdit, onDelete) =>
+            <WorkoutCard key={w.id} workout={w} onEdit={onEdit} onDelete={onDelete}/>
         }
-    }, [mode, setChildren, editorWorkoutName, editorWorkoutDesc, mutation]);
+        onEdit={(w) => {
+            setSelectedId(w.id)
+            setEditorWorkoutName(w.name)
+            setEditorWorkoutDesc(w.description)
+        }}
+        onDelete={(w) => {
+            setSelectedId(w.id)
+        }}
+        renderEditor={(mutation, mode) =>
+            <WorkoutEditor mutation={mutation} name={editorWorkoutName}
+                           setName={setEditorWorkoutName} desc={editorWorkoutDesc}
+                           setDesc={setEditorWorkoutDesc}
+                           headingText={mode === 'create' ? "Create workout" : "Edit workout"}
+                           submitIcon={mode === 'create' ? faPlus : faPencil}/>}
+        queryKey={['workout']}
+        pageCount={c => Math.ceil(c / limit)}
+    />
 
 
-    return <div className="h-full w-full flex flex-col items-center gap-10">
-        <div className="w-full flex justify-center md:justify-end px-20">
-            <IconButton icon={faPlus} onClick={() => {
-                mutation.reset()
-                setMode('create')
-                setEditorWorkoutName('')
-                setEditorWorkoutDesc('')
-                setModalEnabled(true)
-            }}>Add workout</IconButton>
-        </div>
-        <Paginated<WorkoutDto>
-            queryFn={(page) => eitherAsyncToQueryFn(apiService.getWorkouts(page * limit, limit))}
-            renderTemplate={(w) => <WorkoutCard key={w.id} workout={w} onEdit={() => {
-                mutation.reset()
-                setMode('edit')
-                setSelectedId(w.id)
-                setEditorWorkoutName(w.name)
-                setEditorWorkoutDesc(w.description)
-                setModalEnabled(true)
-            }} onDelete={() => {
-                mutation.reset()
-                setMode('delete')
-                setSelectedId(w.id)
-                setModalEnabled(true)
-            }}/>}
-            loadingComponent={<LoadingComponent/>}
-            errorComponent={<ErrorComponent/>}
-            emptyComponent={<EmptyComponent/>}
-            queryKey={workoutKey}
-            pageCount={c => Math.ceil(c / limit)}
-        />
-    </div>
 }
 
 export default Workouts

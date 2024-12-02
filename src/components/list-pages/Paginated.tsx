@@ -24,7 +24,7 @@ const Paginated = <T, >({
 }) => {
     const [page, setPage] = useState(0)
     const {data, status} = useQuery({
-        queryKey: [...queryKey, page],
+        queryKey: [...queryKey, {page}],
         queryFn: queryFn(page),
         keepPreviousData: true
     })
