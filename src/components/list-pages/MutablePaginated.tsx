@@ -40,7 +40,7 @@ const MutablePaginated = <TEditorDto, TViewDto extends TEditorDto & { id: number
 }) => {
     const queryClient = useQueryClient()
 
-    const [modalEnabled, setModalEnabled] = useState(true)
+    const [modalEnabled, setModalEnabled] = useState(false)
 
     const [mode, setMode] = useState<mode>('create')
 

@@ -3,10 +3,10 @@ import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../../utils.ts";
 import IconButton from "../form/IconButton.tsx";
 import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
-import {Context, createContext, Dispatch, SetStateAction, useContext, useState} from "react";
+import {Context, createContext, useContext, useState} from "react";
 import {ApiServiceContext, TokenServiceContext} from "../../services/Instances.ts";
 
-export const TitleContext = createContext(undefined) as unknown as Context<Dispatch<SetStateAction<string>>>
+export const TitleContext = createContext(undefined) as unknown as Context<(title: string) => void>
 
 const TopBarLayout = () => {
     const queryClient = useQueryClient()
