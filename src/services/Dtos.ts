@@ -5,14 +5,14 @@ export type PaginatedDataListDto<T> = {
     results: T[]
 }
 
-export type WorkoutDto = {
+export type WorkoutViewDto = {
     id: number,
     name: string,
     creationDate: string,
     description: string
 }
 
-export type CreateWorkoutDto = {
+export type WorkoutEditDto = {
     name: string,
     description: string
 }
@@ -47,9 +47,15 @@ export type UserProfileDto = {
     num_days_weight_reminder: number;
 }
 
-export type TrainingDayDto = {
+export type TrainingDayViewDto = {
     id: number;
     training: number;
     description: string;
-    day: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    day: (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
+}
+
+export type TrainingDayEditDto = {
+    training: number;
+    description: string;
+    day: (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
 }

@@ -1,7 +1,8 @@
 import {ITokenService, TokenServiceError} from "./TokenService.ts";
 import {EitherAsync, Right} from "purify-ts";
 import {ITokenProvider} from "./TokenProvider.ts";
-import {CreateWorkoutDto, PaginatedDataListDto, UserProfileDto, WorkoutDto} from "./Dtos.ts";
+import {PaginatedDataListDto, UserProfileDto} from "./Dtos.ts";
+import {CrudEndpoint} from "./crud-endpoints.ts";
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 const BASE_URL = 'base-url'
@@ -102,29 +103,29 @@ export class ApiService implements IApiService, ITokenProvider {
             .chain(token => this.request(path, method, `Bearer ${token}`, body))
     }
 
-    getWorkouts(offset: number, limit = 20): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>> {
-        return this.authenticatedRequest(`workout/?limit=${limit}&offset=${offset}&ordering=id`, 'GET')
-    }
 
     userInfo(): EitherAsync<ApiError, UserProfileDto> {
         return this.authenticatedRequest('userprofile/', 'GET');
     }
 
-    getWorkout(id: number): EitherAsync<ApiError, WorkoutDto> {
-        return this.authenticatedRequest(`workout/${id}`, 'GET');
+    list<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto>, offset: number, limit = 20, ordering = 'id'): EitherAsync<ApiError, PaginatedDataListDto<TViewDto>> {
+        return this.authenticatedRequest(`${endpoint.name}/?limit=${limit}&offset=${offset}&ordering=${ordering}`, 'GET')
     }
 
-
-    createWorkout({name, description}: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto> {
-        return this.authenticatedRequest('workout/', 'POST', {name, description});
+    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto>, id: number): EitherAsync<ApiError, TViewDto> {
+        return this.authenticatedRequest(`${endpoint.name}/${id}`, 'GET');
     }
 
-    deleteWorkout(id: number): EitherAsync<ApiError, null> {
-        return this.authenticatedRequest(`workout/${id}/`, 'DELETE');
+    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto>, dto: TEditDto): EitherAsync<ApiError, TViewDto> {
+        return this.authenticatedRequest(`${endpoint.name}/`, 'POST', dto);
     }
 
-    editWorkout(id: number, {name, description}: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto> {
-        return this.authenticatedRequest(`workout/${id}/`, 'PUT', {name, description});
+    delete(endpoint: CrudEndpoint<unknown, unknown>, id: number): EitherAsync<ApiError, null> {
+        return this.authenticatedRequest(`${endpoint.name}/${id}/`, 'DELETE');
+    }
+
+    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto> {
+        return this.authenticatedRequest(`${endpoint.name}/${id}/`, 'PUT', dto);
     }
 
 }
@@ -136,15 +137,15 @@ export interface IApiService {
 
     checkServer(): EitherAsync<ApiError, null>
 
-    getWorkouts(offset: number, limit?: number): EitherAsync<ApiError, PaginatedDataListDto<WorkoutDto>>
+    list<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto>, offset: number, limit?: number, ordering?: string): EitherAsync<ApiError, PaginatedDataListDto<TViewDto>>
 
-    getWorkout(id: number): EitherAsync<ApiError, WorkoutDto>
+    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto>, id: number): EitherAsync<ApiError, TViewDto>
 
-    createWorkout(workout: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto>
+    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto>, dto: TEditDto): EitherAsync<ApiError, TViewDto>
 
-    editWorkout(id: number, workout: CreateWorkoutDto): EitherAsync<ApiError, WorkoutDto>
+    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto>
 
-    deleteWorkout(id: number): EitherAsync<ApiError, null>
+    delete(endpoint: CrudEndpoint<unknown, unknown>, id: number): EitherAsync<ApiError, null>
 
     userInfo(): EitherAsync<ApiError, UserProfileDto>
 }

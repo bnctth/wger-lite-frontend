@@ -1,8 +1,8 @@
-import {WorkoutDto} from "../../services/Dtos.ts";
+import {WorkoutViewDto} from "../../services/Dtos.ts";
 import Card from "../list-pages/Card.tsx";
 
 const WorkoutCard = ({workout, onEdit, onDelete}: {
-    workout: WorkoutDto,
+    workout: WorkoutViewDto,
     onEdit: () => void,
     onDelete: () => void
 }) => {

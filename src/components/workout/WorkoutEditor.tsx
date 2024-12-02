@@ -2,15 +2,15 @@ import TextInput from "../form/TextInput.tsx";
 import {Mutation} from "../../utils.ts";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import Editor from "../list-pages/Editor.tsx";
-import {CreateWorkoutDto} from "../../services/Dtos.ts";
+import {WorkoutEditDto} from "../../services/Dtos.ts";
 import {Dispatch, SetStateAction} from "react";
 
 const WorkoutEditor = ({workout, setWorkout, mutation, submitIcon, headingText}: {
     headingText: string,
     submitIcon: IconProp,
     mutation: Mutation,
-    workout: CreateWorkoutDto,
-    setWorkout: Dispatch<SetStateAction<CreateWorkoutDto>>
+    workout: WorkoutEditDto,
+    setWorkout: Dispatch<SetStateAction<WorkoutEditDto>>
 }) => {
     return (
         <Editor mutation={mutation} errorMessage="Could not add/edit workout" submitIcon={submitIcon}
