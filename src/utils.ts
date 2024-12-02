@@ -16,4 +16,5 @@ enum ButtonColors {
 export const buttonColors = Object.values(ButtonColors);
 export type ButtonColorType = keyof typeof ButtonColors;
 
+
 export const days: ReadonlyArray<string> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']

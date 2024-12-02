@@ -11,7 +11,7 @@ const TrainingDayCard = ({item, onEdit, onDelete}: {
         <Card onEdit={onEdit} onDelete={onDelete} linkTo={`${item.id}`}>
             <h3 className="font-bold text-xl md:w-2/12">{item.description}</h3>
             <div className="flex gap-2">
-                {item.day.map(d => <span className="p-1 bg-light rounded" key={d}>{days[d]}</span>)}
+                {item.day.map(d => <span className="p-1 bg-light rounded" key={d}>{days[d - 1]}</span>)}
             </div>
         </Card>
     )

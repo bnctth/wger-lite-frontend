@@ -1,20 +1,18 @@
 import TextInput from "../form/TextInput.tsx";
 import {Mutation} from "../../utils.ts";
-import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import Editor from "../list-pages/Editor.tsx";
 import {WorkoutEditDto} from "../../services/Dtos.ts";
 import {Dispatch, SetStateAction} from "react";
+import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
 
-const WorkoutEditor = ({workout, setWorkout, mutation, submitIcon, headingText}: {
-    headingText: string,
-    submitIcon: IconProp,
+const WorkoutEditor = ({workout, setWorkout, mutation, mode}: {
+    mode: ReducedMode,
     mutation: Mutation,
     workout: WorkoutEditDto,
     setWorkout: Dispatch<SetStateAction<WorkoutEditDto>>
 }) => {
     return (
-        <Editor mutation={mutation} errorMessage="Could not add/edit workout" submitIcon={submitIcon}
-                headingText={headingText}>
+        <Editor mutation={mutation} mode={mode}>
             <TextInput label="Name" placeholder="My workout" value={workout.name} onChange={(v) => setWorkout(w => ({
                 ...w,
                 name: v

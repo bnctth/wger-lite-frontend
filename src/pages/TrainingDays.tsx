@@ -2,7 +2,6 @@ import {TrainingDayEditDto, TrainingDayViewDto} from "../services/Dtos.ts";
 import {useContext, useEffect} from "react";
 import {ApiServiceContext} from "../services/Instances.ts";
 import {TitleContext} from "../components/layouts/TopBarLayout.tsx";
-import {faPencil, faPlus} from "@fortawesome/free-solid-svg-icons";
 import MutablePaginated from "../components/list-pages/MutablePaginated.tsx";
 import {TrainingDayEndpoint, WorkoutEndpoint} from "../services/crud-endpoints.ts";
 import {useQuery} from "@tanstack/react-query";
@@ -13,7 +12,7 @@ import TrainingDayEditor from "../components/training-day/TrainingDayEditor.tsx"
 
 const limit = 5
 
-const Workouts = () => {
+const TrainingDays = () => {
     const apiService = useContext(ApiServiceContext)
     const setTitle = useContext(TitleContext)
     const {workoutId} = useParams() as unknown as { workoutId: number }
@@ -34,15 +33,13 @@ const Workouts = () => {
             <TrainingDayCard key={item.id} item={item} onEdit={onEdit} onDelete={onDelete}/>
         }
         renderEditor={(mutation, mode, item, setWorkout) =>
-            <TrainingDayEditor mutation={mutation} item={item} setItem={setWorkout}
-                               headingText={mode === 'create' ? "Create workout" : "Edit workout"}
-                               submitIcon={mode === 'create' ? faPlus : faPencil}/>}
+            <TrainingDayEditor mutation={mutation} item={item} setItem={setWorkout} mode={mode}/>}
         queryKey={['workout', workoutId]}
-        defaultEditorValue={{name: '', description: ''}}
+        defaultEditorValue={{day: [], training: workoutId, description: ''}}
         pageCount={c => Math.ceil(c / limit)}
     />
 
 
 }
 
-export default Workouts
+export default TrainingDays

@@ -1,29 +1,29 @@
 import TextInput from "../form/TextInput.tsx";
-import {Mutation} from "../../utils.ts";
-import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import {days, Mutation} from "../../utils.ts";
 import Editor from "../list-pages/Editor.tsx";
 import {TrainingDayEditDto} from "../../services/Dtos.ts";
 import {Dispatch, SetStateAction} from "react";
+import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
+import CheckboxList from "../form/CheckboxList.tsx";
 
-const TrainingDayEditor = ({item, setItem, mutation, submitIcon, headingText}: {
-    headingText: string,
-    submitIcon: IconProp,
+const TrainingDayEditor = ({item, setItem, mutation, mode}: {
+    mode: ReducedMode,
     mutation: Mutation,
     item: TrainingDayEditDto,
     setItem: Dispatch<SetStateAction<TrainingDayEditDto>>
 }) => {
     return (
-        <Editor mutation={mutation} errorMessage="Could not add/edit " submitIcon={submitIcon}
-                headingText={headingText}>
-            <TextInput label="Name" placeholder="My workout" value={item.name} onChange={(v) => setItem(w => ({
-                ...w,
-                name: v
-            }))}/>
-            <TextInput label="Description" placeholder="All about my new workout..." value={item.description}
+        <Editor mutation={mutation} mode={mode}>
+            <TextInput label="Description" placeholder="Leg day" value={item.description}
                        onChange={(v) => setItem(w => ({
                            ...w,
                            description: v
                        }))}/>
+            <CheckboxList names={days} values={Array.of(...Array(7).keys()).map(i => item.day.includes(i + 1))}
+                          setValues={values => setItem(old => ({
+                              ...old,
+                              day: values.flatMap((v, i) => v ? [i + 1] : [])
+                          }))}/>
         </Editor>
     );
 };

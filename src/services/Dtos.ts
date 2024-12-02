@@ -51,11 +51,11 @@ export type TrainingDayViewDto = {
     id: number;
     training: number;
     description: string;
-    day: (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
+    day: number[];
 }
 
 export type TrainingDayEditDto = {
     training: number;
     description: string;
-    day: (1 | 2 | 3 | 4 | 5 | 6 | 7)[];
+    day: number[];
 }
