@@ -30,7 +30,7 @@ const Sets = () => {
         }
         renderEditor={(mutation, mode, item, setWorkout) =>
             <SetEditor mutation={mutation} item={item} setItem={setWorkout} mode={mode}/>}
-        queryKey={['trainingDay', trainingDay]}
+        queryKey={['trainingDay', trainingDay, 'sets']}
         defaultEditorValue={{exerciseday: trainingDayId, sets: 0, order: 0, comment: ''}}
         pageCount={c => Math.ceil(c / limit)}
         endpoint={SetEndpoint}

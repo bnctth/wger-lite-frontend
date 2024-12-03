@@ -24,7 +24,9 @@ export default {
                 'light': colors.gray["200"],
                 danger: colors.red["500"],
                 'danger-hover': colors.red["400"],
-                'danger-faded': colors.red["200"]
+                'danger-faded': colors.red["200"],
+                warning: colors.amber["500"],
+                'warning-hover': colors.amber["400"],
             }
         },
     },

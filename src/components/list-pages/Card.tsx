@@ -3,11 +3,12 @@ import IconButton from "../form/IconButton.tsx";
 import {faPencil, faX} from "@fortawesome/free-solid-svg-icons";
 import {ReactNode} from "react";
 
-const Card = (({onEdit, onDelete, children, linkTo}: {
+const Card = (({onEdit, onDelete, children, linkTo, extraButton}: {
     onEdit: () => void,
     onDelete: () => void,
     linkTo: To,
-    children: ReactNode
+    children: ReactNode,
+    extraButton?: ReactNode
 }) => {
     return (
         <div
@@ -17,6 +18,7 @@ const Card = (({onEdit, onDelete, children, linkTo}: {
                 {children}
             </Link>
             <div className="md:w-4/12 lg:w-3/12 xl:w-2/12 flex *:flex-grow gap-2">
+                {extraButton}
                 <IconButton icon={faPencil} onClick={onEdit}>{"Edit"}</IconButton>
                 <IconButton icon={faX} color="danger" onClick={onDelete}>{"Delete"}</IconButton>
             </div>

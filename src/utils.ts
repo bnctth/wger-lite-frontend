@@ -11,6 +11,7 @@ export type Mutation = UseMutationResult<unknown, unknown, void>
 enum ButtonColors {
     "primary",
     "danger",
+    "warning"
 }
 
 export const buttonColors = Object.values(ButtonColors);

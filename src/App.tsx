@@ -28,7 +28,8 @@ function App() {
                             <Route path=":workoutId">
                                 <Route index element={<TrainingDays/>}/>
                                 <Route path=":trainingDayId">
-                                    <Route index element={<Sets/>}/>
+                                    <Route path="sets" element={<Sets/>}/>
+                                    <Route path="logs" element={<Sets/>}/>
                                 </Route>
                             </Route>
                         </Route>

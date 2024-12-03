@@ -1,4 +1,4 @@
-import {Outlet, useNavigate} from "react-router";
+import {Link, Outlet, useNavigate} from "react-router";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../../utils.ts";
 import IconButton from "../form/IconButton.tsx";
@@ -26,7 +26,7 @@ const TopBarLayout = () => {
         <div className="h-full w-full pt-24">
             {data &&
                 <div className="top-0 absolute w-full flex justify-between items-center p-6">
-                    <h1 className="text-2xl font-bold">{title}</h1>
+                    <Link to=".."><h1 className="text-2xl font-bold">{title}</h1></Link>
                     <div className="flex gap-6 items-center">
                         <span className="">{data.username}</span>
                         <IconButton icon={faRightFromBracket} onClick={async () => {
