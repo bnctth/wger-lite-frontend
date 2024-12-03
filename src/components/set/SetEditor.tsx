@@ -23,6 +23,11 @@ const SetEditor = ({item, setItem, mutation, mode}: {
                            ...w,
                            sets: v as unknown as number
                        }))}/>
+            <TextInput label="Order" placeholder="5" type="number" value={item.order as unknown as string}
+                       onChange={(v) => setItem(w => ({
+                           ...w,
+                           order: v as unknown as number
+                       }))}/>
         </Editor>
     );
 };

@@ -5,7 +5,7 @@ import MutablePaginated from "../components/list-pages/MutablePaginated.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {eitherAsyncToQueryFn} from "../utils.ts";
 import {useParams} from "react-router";
-import {SetEndpoint} from "../services/CrudEndpoint.ts";
+import {SetEndpoint, TrainingDayEndpoint} from "../services/CrudEndpoint.ts";
 import SetCard from "../components/set/SetCard.tsx";
 import SetEditor from "../components/set/SetEditor.tsx";
 
@@ -17,9 +17,9 @@ const Sets = () => {
     const {trainingDayId} = useParams() as unknown as { workoutId: number, trainingDayId: number }
     const {data: trainingDay} = useQuery({
         queryKey: ['trainingDay', {id: trainingDayId}],
-        queryFn: eitherAsyncToQueryFn(apiService.read(SetEndpoint, trainingDayId))
+        queryFn: eitherAsyncToQueryFn(apiService.read(TrainingDayEndpoint, trainingDayId))
     })
-    useEffect(() => setTitle(`${trainingDay?.comment ?? ''} | Sets`))
+    useEffect(() => setTitle(`${trainingDay?.description ?? ''} | Sets`))
 
 
     return <MutablePaginated
@@ -31,7 +31,7 @@ const Sets = () => {
         renderEditor={(mutation, mode, item, setWorkout) =>
             <SetEditor mutation={mutation} item={item} setItem={setWorkout} mode={mode}/>}
         queryKey={['trainingDay', trainingDay]}
-        defaultEditorValue={{exerciseDay: trainingDay, sets: 0, order: Date.now(), comment: ''}}
+        defaultEditorValue={{exerciseday: trainingDayId, sets: 0, order: 0, comment: ''}}
         pageCount={c => Math.ceil(c / limit)}
         endpoint={SetEndpoint}
         parentId={trainingDayId}
