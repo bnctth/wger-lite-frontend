@@ -74,3 +74,24 @@ export type SetEditDto = {
     order: number;
     comment: string;
 }
+
+
+export type SessionViewDto = {
+    id: number;
+    user: number;
+    workout: number;
+    date: string;
+    notes: string;
+    impression: string;
+    time_start: string;
+    time_end: string;
+}
+
+export type SessionEditDto = {
+    workout: number;
+    date: string;
+    notes: string;
+    impression: string;
+    time_start: string;
+    time_end: string;
+}

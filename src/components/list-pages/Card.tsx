@@ -17,7 +17,7 @@ const Card = (({onEdit, onDelete, children, linkTo, extraButton}: {
             <Link className="w-10/12 flex flex-col md:flex-row cursor-pointer" to={linkTo}>
                 {children}
             </Link>
-            <div className="md:w-4/12 lg:w-3/12 xl:w-2/12 flex *:flex-grow gap-2">
+            <div className="md:w-5/12 lg:w-4/12 xl:w-3/12 flex *:flex-grow gap-2">
                 {extraButton}
                 <IconButton icon={faPencil} onClick={onEdit}>{"Edit"}</IconButton>
                 <IconButton icon={faX} color="danger" onClick={onDelete}>{"Delete"}</IconButton>

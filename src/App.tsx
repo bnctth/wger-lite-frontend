@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import TopBarLayout from "./components/layouts/TopBarLayout.tsx";
 import TrainingDays from "./pages/TrainingDays.tsx";
 import Sets from "./pages/Sets.tsx";
+import Sessions from "./pages/Sessions.tsx";
 
 const queryClient = new QueryClient()
 
@@ -26,10 +27,10 @@ function App() {
                         <Route path={"workouts"}>
                             <Route index element={<Workouts/>}/>
                             <Route path=":workoutId">
-                                <Route index element={<TrainingDays/>}/>
-                                <Route path=":trainingDayId">
-                                    <Route path="sets" element={<Sets/>}/>
-                                    <Route path="logs" element={<Sets/>}/>
+                                <Route path="sessions" element={<Sessions/>}/>
+                                <Route path="training-days">
+                                    <Route index element={<TrainingDays/>}/>
+                                    <Route path=":trainingDayId" element={<Sets/>}/>
                                 </Route>
                             </Route>
                         </Route>

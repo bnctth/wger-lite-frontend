@@ -11,7 +11,7 @@ export type Mutation = UseMutationResult<unknown, unknown, void>
 enum ButtonColors {
     "primary",
     "danger",
-    "warning"
+    "unimportant"
 }
 
 export const buttonColors = Object.values(ButtonColors);
@@ -19,3 +19,8 @@ export type ButtonColorType = keyof typeof ButtonColors;
 
 
 export const days: ReadonlyArray<string> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+export const impressions = [
+    'Bad',
+    'Neutral',
+    'Good'
+]

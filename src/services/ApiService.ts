@@ -13,7 +13,7 @@ export enum ApiErrorKind {
     TokenServiceError
 }
 
-type UndefineableString = string | undefined
+type UndefinableString = string | undefined
 
 
 export type MaybeNumber<T extends string | undefined> = T extends string ? number : undefined
@@ -119,19 +119,19 @@ export class ApiService implements IApiService, ITokenProvider {
         return this.authenticatedRequest(`${endpoint.name}/?limit=${limit}&offset=${offset}&ordering=${ordering}${parentQuery}`, 'GET')
     }
 
-    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto, UndefineableString>, id: number): EitherAsync<ApiError, TViewDto> {
+    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto, UndefinableString>, id: number): EitherAsync<ApiError, TViewDto> {
         return this.authenticatedRequest(`${endpoint.name}/${id}`, 'GET');
     }
 
-    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto, UndefineableString>, dto: TEditDto): EitherAsync<ApiError, TViewDto> {
+    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto, UndefinableString>, dto: TEditDto): EitherAsync<ApiError, TViewDto> {
         return this.authenticatedRequest(`${endpoint.name}/`, 'POST', dto);
     }
 
-    delete(endpoint: CrudEndpoint<unknown, unknown, UndefineableString>, id: number): EitherAsync<ApiError, null> {
+    delete(endpoint: CrudEndpoint<unknown, unknown, UndefinableString>, id: number): EitherAsync<ApiError, null> {
         return this.authenticatedRequest(`${endpoint.name}/${id}/`, 'DELETE');
     }
 
-    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto, UndefineableString>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto> {
+    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto, UndefinableString>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto> {
         return this.authenticatedRequest(`${endpoint.name}/${id}/`, 'PUT', dto);
     }
 
@@ -146,11 +146,11 @@ export interface IApiService {
 
     list<TViewDto, TParent extends string | undefined>(endpoint: CrudEndpoint<unknown, TViewDto, TParent>, offset: number, limit: number, parent: (TParent extends string ? number : undefined), ordering?: string): EitherAsync<ApiError, PaginatedDataListDto<TViewDto>>
 
-    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto, UndefineableString>, id: number): EitherAsync<ApiError, TViewDto>
+    read<TViewDto>(endpoint: CrudEndpoint<unknown, TViewDto, UndefinableString>, id: number): EitherAsync<ApiError, TViewDto>
 
-    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto, UndefineableString>, dto: TEditDto): EitherAsync<ApiError, TViewDto>
+    create<TEditDto extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditDto, TViewDto, UndefinableString>, dto: TEditDto): EitherAsync<ApiError, TViewDto>
 
-    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto, UndefineableString>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto>
+    update<TEditWorkout extends Record<string, unknown>, TViewDto>(endpoint: CrudEndpoint<TEditWorkout, TViewDto, UndefinableString>, id: number, dto: TEditWorkout): EitherAsync<ApiError, TViewDto>
 
     delete(endpoint: CrudEndpoint<unknown, unknown, string | undefined>, id: number): EitherAsync<ApiError, null>
 

@@ -1,4 +1,6 @@
 import {
+    SessionEditDto,
+    SessionViewDto,
     SetEditDto,
     SetViewDto,
     TrainingDayEditDto,
@@ -26,4 +28,9 @@ export const TrainingDayEndpoint: CrudEndpoint<TrainingDayEditDto, TrainingDayVi
 export const SetEndpoint: CrudEndpoint<SetEditDto, SetViewDto, string> = {
     name: 'set',
     parent: 'exerciseday'
+}
+
+export const SessionEndpoint: CrudEndpoint<SessionEditDto, SessionViewDto, string> = {
+    name: 'workoutsession',
+    parent: 'workout'
 }
