@@ -6,6 +6,11 @@ import {eitherAsyncToQueryFn} from "../../utils.ts";
 import {ApiServiceContext} from "../../services/Instances.ts";
 import Form from "../../components/form/Form.tsx";
 
+/**
+ * Component to select the hostname of the server
+ *
+ * Path: /auth/hostname-selector
+ */
 const HostnameSelector = () => {
     const [hostname, setHostname] = useState('https://wger.de')
 

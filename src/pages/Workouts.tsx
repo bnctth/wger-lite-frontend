@@ -7,6 +7,11 @@ import {WorkoutEndpoint} from "../services/CrudEndpoint.ts";
 
 const limit = 5
 
+/**
+ * Page for managing workouts
+ *
+ * Path: /workouts
+ */
 const Workouts = () => {
     const setTitle = useContext(TitleContext)
     useEffect(() => setTitle('Routines'))

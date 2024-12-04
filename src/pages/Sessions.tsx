@@ -11,6 +11,11 @@ import SessionEditor from "../components/session/SessionEditor.tsx";
 
 const limit = 5
 
+/**
+ * Page for managing sessions of a workout
+ *
+ * Path: /workouts/:workoutId/sessions
+ */
 const Sessions = () => {
     const apiService = useContext(ApiServiceContext)
     const setTitle = useContext(TitleContext)

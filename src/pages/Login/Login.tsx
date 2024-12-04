@@ -8,6 +8,11 @@ import {eitherAsyncToQueryFn} from "../../utils.ts";
 import {TokenServiceContext} from "../../services/Instances.ts";
 import Form from "../../components/form/Form.tsx";
 
+/**
+ * Login page
+ *
+ * Path: /auth/login
+ */
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')

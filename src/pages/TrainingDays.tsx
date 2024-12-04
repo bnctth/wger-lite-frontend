@@ -11,6 +11,11 @@ import TrainingDayEditor from "../components/training-day/TrainingDayEditor.tsx"
 
 const limit = 5
 
+/**
+ * Page for managing training days
+ *
+ * Path: /workouts/:workoutId/training-days
+ */
 const TrainingDays = () => {
     const apiService = useContext(ApiServiceContext)
     const setTitle = useContext(TitleContext)

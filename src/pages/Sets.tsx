@@ -11,6 +11,11 @@ import SetEditor from "../components/set/SetEditor.tsx";
 
 const limit = 5
 
+/**
+ * Page for managing sets
+ *
+ * Path: /workouts/:workoutId/training-days/:trainingDayId
+ */
 const Sets = () => {
     const apiService = useContext(ApiServiceContext)
     const setTitle = useContext(TitleContext)

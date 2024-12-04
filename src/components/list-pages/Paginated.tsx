@@ -5,6 +5,16 @@ import Button from "../form/Button.tsx";
 import IconButton from "../form/IconButton.tsx";
 import {faAngleLeft, faAngleRight, faAnglesLeft, faAnglesRight} from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Paginated component that fetches data from the server and renders it in a paginated list with a custom template
+ * @param queryKey - The query key for the useQuery hook
+ * @param queryFn - The function that fetches the data from the server
+ * @param renderTemplate - The function that renders the card for each item in the list
+ * @param errorComponent - The component to render when the query fails
+ * @param loadingComponent - The component to render while the query is loading
+ * @param pageCount - The function that calculates the number of pages
+ * @param emptyComponent - The component to render when the list is empty
+ */
 const Paginated = <T, >({
                             queryKey,
                             queryFn,

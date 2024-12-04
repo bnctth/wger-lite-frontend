@@ -2,10 +2,32 @@ import {TextInputProps} from "./TextInput.tsx";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
+/**
+ * Props for TextInputWithButton
+ */
 type TextInputWithButtonProps = TextInputProps & {
+    /**
+     * Icon for the button
+     */
     buttonIcon?: IconProp,
+    /**
+     * Function to be called when the button is clicked
+     */
     onClick?: () => void
 }
+
+/**
+ * Text input with a button (e.g. hide/show password)
+ * @param value
+ * @param onChange
+ * @param type
+ * @param disabled
+ * @param placeholder
+ * @param label
+ * @param required
+ * @param buttonIcon
+ * @param onClick
+ */
 const TextInputWithButton = ({
                                  value,
                                  onChange,

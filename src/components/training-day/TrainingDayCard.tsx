@@ -2,6 +2,13 @@ import {TrainingDayViewDto} from "../../services/Dtos.ts";
 import Card from "../list-pages/Card.tsx";
 import {days} from "../../utils.ts";
 
+/**
+ * Card for displaying training day
+ * @param item the training day
+ * @param onEdit callback for edit button
+ * @param onDelete callback for delete button
+ * @constructor
+ */
 const TrainingDayCard = ({item, onEdit, onDelete}: {
     item: TrainingDayViewDto,
     onEdit: () => void,

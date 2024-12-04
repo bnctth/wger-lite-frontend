@@ -1,3 +1,7 @@
+/**
+ * Data Transfer Objects (DTOs) for the API, generated from the OpenAPI schema.
+ */
+
 export type PaginatedDataListDto<T> = {
     count: number,
     next: string,

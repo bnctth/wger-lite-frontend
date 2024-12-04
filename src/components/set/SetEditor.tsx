@@ -5,6 +5,14 @@ import {SetEditDto} from "../../services/Dtos.ts";
 import {Dispatch, SetStateAction} from "react";
 import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
 
+/**
+ * Editor for sets
+ * @param item the set to edit
+ * @param setItem the setter for the set
+ * @param mutation the mutation to use
+ * @param mode the mode of the editor
+ * @constructor
+ */
 const SetEditor = ({item, setItem, mutation, mode}: {
     mode: ReducedMode,
     mutation: Mutation,

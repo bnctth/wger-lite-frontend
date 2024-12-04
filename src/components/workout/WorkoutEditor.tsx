@@ -5,6 +5,14 @@ import {WorkoutEditDto} from "../../services/Dtos.ts";
 import {Dispatch, SetStateAction} from "react";
 import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
 
+/**
+ * Workout editor component
+ * @param workout - workout to edit
+ * @param setWorkout - set workout
+ * @param mutation - mutation
+ * @param mode  - mode
+ * @constructor
+ */
 const WorkoutEditor = ({workout, setWorkout, mutation, mode}: {
     mode: ReducedMode,
     mutation: Mutation,

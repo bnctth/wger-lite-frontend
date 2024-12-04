@@ -4,6 +4,13 @@ import {Link} from "react-router";
 import IconButton from "../form/IconButton.tsx";
 import {faScroll} from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Workout card component
+ * @param item WorkoutViewDto
+ * @param onEdit Edit callback
+ * @param onDelete Delete callback
+ * @constructor
+ */
 const WorkoutCard = ({item, onEdit, onDelete}: {
     item: WorkoutViewDto,
     onEdit: () => void,

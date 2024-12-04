@@ -6,6 +6,14 @@ import {Dispatch, SetStateAction} from "react";
 import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
 import CheckboxList from "../form/CheckboxList.tsx";
 
+/**
+ * Editor for training day
+ * @param item the training day
+ * @param setItem the setter for the training day
+ * @param mutation the mutation to use
+ * @param mode the mode of the editor
+ * @constructor
+ */
 const TrainingDayEditor = ({item, setItem, mutation, mode}: {
     mode: ReducedMode,
     mutation: Mutation,

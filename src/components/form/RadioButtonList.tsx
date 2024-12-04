@@ -1,9 +1,28 @@
+/**
+ * Props for RadioButtonList component
+ */
 export type RadioButtonListProps = {
+    /**
+     * Names of the options
+     */
     names: readonly string[],
+    /**
+     * Index of the selected option
+     */
     selected: number,
+    /**
+     * Function to set the selected option
+     * @param val - Index of the selected option
+     */
     setSelected: (val: number) => void
 }
 
+/**
+ * Radio button list component
+ * @param setSelected - Function to set the selected option
+ * @param selected - Index of the selected option
+ * @param names - Names of the options
+ */
 const RadioButtonList = ({setSelected, selected, names}: RadioButtonListProps) => {
     return (
         <fieldset>

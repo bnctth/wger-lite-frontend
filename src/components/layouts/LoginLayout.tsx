@@ -1,5 +1,8 @@
 import {Outlet} from "react-router";
 
+/**
+ * Layout for the login pages
+ */
 const LoginLayout = () => {
     return <div className="flex min-h-dvh justify-center items-center bg-primary">
         <div

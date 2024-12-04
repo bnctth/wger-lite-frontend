@@ -2,13 +2,21 @@ import {SessionViewDto} from "../../services/Dtos.ts";
 import Card from "../list-pages/Card.tsx";
 import {ButtonColorType, impressions} from "../../utils.ts";
 
-
+/**
+ * Possible colors for the impression badge - index corresponds to the impression value-1
+ */
 const impressionColors: ButtonColorType[] = [
     'danger',
     'unimportant',
     'primary'
 ]
 
+/**
+ * Card for displaying info about a session
+ * @param item - the session to display
+ * @param onEdit - callback for the edit button
+ * @param onDelete - callback for the delete button
+ */
 const SessionCard = ({item, onEdit, onDelete}: {
     item: SessionViewDto,
     onEdit: () => void,

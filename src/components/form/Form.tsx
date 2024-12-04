@@ -4,6 +4,15 @@ import LoadingIconButton from "./LoadingIconButton.tsx";
 import ErrorBox from "../list-pages/ErrorBox.tsx";
 import {Mutation} from "../../utils.ts";
 
+/**
+ * Form component
+ * @param children - mostly input elements
+ * @param submitText - text on the submit button
+ * @param submitIcon - icon on the submit button
+ * @param mutation - mutation to be called on submit
+ * @param headingText - optional heading text
+ * @param errorMessage - error message to be displayed on error
+ */
 const Form = ({children, submitText, submitIcon, mutation, headingText, errorMessage}: {
     headingText?: string,
     errorMessage: string,

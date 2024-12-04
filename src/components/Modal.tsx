@@ -3,6 +3,13 @@ import {ReactNode} from "react";
 import IconButton from "./form/IconButton.tsx";
 import {faX} from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Modal component that renders a modal with a close button directly into the body of the document.
+ * @param children - The content of the modal
+ * @param enabled - Whether the modal is enabled or not
+ * @param setEnabled - Function to set the enabled state of the modal
+ * @constructor
+ */
 const Modal = ({children, enabled, setEnabled}: {
     children: ReactNode,
     enabled: boolean,

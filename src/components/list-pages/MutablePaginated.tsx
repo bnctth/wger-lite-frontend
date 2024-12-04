@@ -16,8 +16,25 @@ import {ApiServiceContext} from "../../services/Instances.ts";
 export type ReducedMode = 'create' | 'edit'
 export type Mode = ReducedMode | 'delete'
 
+/**
+ * Context to pass down the name of the items being displayed
+ */
 export const PageNameContext = createContext('')
 
+/**
+ * A paginated list of items where the user can create, edit and delete items
+ * @param endpoint The endpoint to use for the CRUD operations
+ * @param name The name of the items being displayed
+ * @param renderEditor A function that renders the editor for the items
+ * @param queryKey The query key to use for the query
+ * @param getItems A function that returns the offset and limit for the items to fetch
+ * @param renderTemplate A function that renders a card for the items
+ * @param pageCount A function that returns the number of pages for the items
+ * @param defaultEditorValue The default value to use when creating a new item
+ * @param parentId The id of the parent item - optional
+ * @param ordering The ordering to use for the items - optional
+ * @constructor
+ */
 const MutablePaginated = <TEditorDto extends Record<string, unknown>, TViewDto extends TEditorDto & {
     id: number
 }, TParent extends string | undefined>({

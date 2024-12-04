@@ -6,6 +6,14 @@ import {Dispatch, SetStateAction} from "react";
 import {ReducedMode} from "../list-pages/MutablePaginated.tsx";
 import RadioButtonList from "../form/RadioButtonList.tsx";
 
+/**
+ * Editor for the session entity
+ * @param item the session to edit
+ * @param setItem the setter for the session
+ * @param mutation the mutation to use
+ * @param mode the mode of the editor (create, update)
+ * @constructor
+ */
 const SessionEditor = ({item, setItem, mutation, mode}: {
     mode: ReducedMode,
     mutation: Mutation,

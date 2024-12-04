@@ -6,8 +6,15 @@ import {faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
 import {Context, createContext, useContext, useState} from "react";
 import {ApiServiceContext, TokenServiceContext} from "../../services/Instances.ts";
 
+/**
+ * Context for setting the title of the page
+ */
 export const TitleContext = createContext(undefined) as unknown as Context<(title: string) => void>
 
+/**
+ * Layout for displaying a top bar with a title and a logout button
+ * @constructor
+ */
 const TopBarLayout = () => {
     const queryClient = useQueryClient()
     const navigate = useNavigate()

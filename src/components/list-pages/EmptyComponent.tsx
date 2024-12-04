@@ -1,3 +1,6 @@
+/**
+ * Component for displaying a message when there is no data to display.
+ */
 const EmptyComponent = () => {
     return (
         <div className="w-full h-full flex justify-center items-center">

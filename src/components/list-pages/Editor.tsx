@@ -4,6 +4,12 @@ import {ReactNode, useContext} from "react";
 import {faPencil, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {PageNameContext, ReducedMode} from "./MutablePaginated.tsx";
 
+/**
+ * Base component for creating and editing pages.
+ * @param mutation - The mutation to be called when the form is submitted.
+ * @param children - The form fields.
+ * @param mode - The mode of the editor. Either 'create' or 'edit'.
+ */
 const Editor = ({mutation, children, mode}: {
     mutation: Mutation,
     children: ReactNode,

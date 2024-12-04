@@ -3,6 +3,14 @@ import IconButton from "../form/IconButton.tsx";
 import {faPencil, faX} from "@fortawesome/free-solid-svg-icons";
 import {ReactNode} from "react";
 
+/**
+ * A card component that displays a link to a page, and has edit and delete buttons.
+ * @param onEdit The function to call when the edit button is clicked.
+ * @param onDelete The function to call when the delete button is clicked.
+ * @param linkTo The link to navigate to when the card is clicked.
+ * @param children The content of the card.
+ * @param extraButton An extra button to display on the card. - optional
+ */
 const Card = (({onEdit, onDelete, children, linkTo, extraButton}: {
     onEdit: () => void,
     onDelete: () => void,
