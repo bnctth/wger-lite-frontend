@@ -1,8 +1,8 @@
-import {WorkoutViewDto} from "../../services/Dtos.ts";
+import { WorkoutViewDto } from "../../services/Dtos.ts";
 import Card from "../list-pages/Card.tsx";
-import {Link} from "react-router";
+import { Link } from "react-router";
 import IconButton from "../form/IconButton.tsx";
-import {faScroll} from "@fortawesome/free-solid-svg-icons";
+import { faScroll } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * Workout card component
@@ -11,23 +11,30 @@ import {faScroll} from "@fortawesome/free-solid-svg-icons";
  * @param onDelete Delete callback
  * @constructor
  */
-const WorkoutCard = ({item, onEdit, onDelete}: {
-    item: WorkoutViewDto,
-    onEdit: () => void,
-    onDelete: () => void
+const WorkoutCard = ({
+                       item,
+                       onEdit,
+                       onDelete
+                     }: {
+  item: WorkoutViewDto;
+  onEdit: () => void;
+  onDelete: () => void;
 }) => {
-    return (
-        <Card onEdit={onEdit} onDelete={onDelete} linkTo={`${item.id}/training-days`} extraButton={
-            <Link to={`${item.id}/sessions`}>
-                <IconButton icon={faScroll}>
-                    Sessions
-                </IconButton>
-            </Link>
-        }>
-            <h3 className="font-bold text-xl md:w-2/12">{item.name}</h3>
-            <p className="md:w-10/12">{item.description}</p>
-        </Card>
-    )
+  return (
+    <Card
+      onEdit={onEdit}
+      onDelete={onDelete}
+      linkTo={`${item.id}/training-days`}
+      extraButton={
+        <Link to={`${item.id}/sessions`}>
+          <IconButton icon={faScroll}>Sessions</IconButton>
+        </Link>
+      }
+    >
+      <h3 className="font-bold text-xl md:w-2/12">{item.name}</h3>
+      <p className="md:w-10/12">{item.description}</p>
+    </Card>
+  );
 };
 
 export default WorkoutCard;

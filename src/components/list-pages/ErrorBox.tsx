@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import { ReactNode } from "react";
 
 /**
  * Component to display an error box
@@ -6,11 +6,22 @@ import {ReactNode} from 'react';
  * @param children - the content of the error box
  * @constructor
  */
-const ErrorBox = ({enabled, children}: { enabled: boolean, children: ReactNode }) => {
-    return (<>
-            {enabled && <div className="bg-danger-faded border-danger border-2 rounded p-2">{children}</div>}
-        </>
-    );
+const ErrorBox = ({
+                    enabled,
+                    children
+                  }: {
+  enabled: boolean;
+  children: ReactNode;
+}) => {
+  return (
+    <>
+      {enabled && (
+        <div className="bg-danger-faded border-danger border-2 rounded p-2">
+          {children}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ErrorBox;
