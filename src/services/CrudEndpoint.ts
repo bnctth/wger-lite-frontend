@@ -15,9 +15,10 @@ import {
  * @param _TViewDto The type of the view DTO.
  * @param TParent The type of the parent entity. If the entity has no parent, this should be `undefined`.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface CrudEndpoint<
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _TEditDto,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _TViewDto,
   TParent extends string | undefined = undefined,
 > {
